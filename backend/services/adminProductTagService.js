@@ -2,7 +2,7 @@ const AdminProductTagRepository = require('../repositories/adminProductTagReposi
 const ProductRepository = require('../repositories/productRepository');
 
 class AdminProductTagService {
-  static async getTags(productId) {
+  static async getProductTags(productId) {
     const product = await ProductRepository.findById(productId);
     if (!product) {
       throw new Error('Product not found');
@@ -18,12 +18,28 @@ class AdminProductTagService {
     return AdminProductTagRepository.addProductTag(productId, tagName);
   }
 
-  static async deleteTag(productId, tagId) {
+  static async deleteProductTag(productId, tagId) {
     const tag = await AdminProductTagRepository.getTagById(tagId);
     if (!tag || tag.product_id !== productId) {
       throw new Error('Tag not found for this product');
     }
     await AdminProductTagRepository.deleteProductTag(tagId);
+  }
+
+  static async createTag(tagName) {
+    return AdminProductTagRepository.addTag(tagName);
+  }
+
+  static async getTags() {
+    return AdminProductTagRepository.getTags();
+  }
+
+  static async deleteTag(tagName) {
+    await AdminProductTagRepository.deleteTag(tagName);
+  }
+
+  static async editTag(oldTagName, newTagName) {
+    await AdminProductTagRepository.editTag(oldTagName, newTagName);
   }
 }
 

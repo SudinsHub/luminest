@@ -10,21 +10,24 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
 import api from "@/lib/api/axios"
-import type { Category } from "@/lib/types"
+import type { Category, Tag } from "@/lib/types"
 import { Checkbox } from "@/components/ui/checkbox"
+import { Dropzone, DropzoneContent, DropzoneEmptyState } from "@/components/ui/dropzone"
+import { UploadIcon } from "lucide-react"
 
 export default function CreateProductPage() {
   const router = useRouter()
   const { toast } = useToast()
   const [categories, setCategories] = useState<Category[]>([])
+  const [tags, setTags] = useState<Tag[]>([])
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     price: "",
     stock_quantity: "",
-    images: [] as string[],
+    images: [] as File[],
     categoryIds: [] as string[],
-    tags: "",
+    tags: [] as string[],
   })
   const [isLoading, setIsLoading] = useState(false)
 
@@ -37,8 +40,17 @@ export default function CreateProductPage() {
         console.error("Failed to fetch categories:", error)
       }
     }
+    const fetchTags = async () => {
+      try {
+        const response = await api.get("/admin/tags")
+        setTags(response.data)
+      } catch (error) {
+        console.error("Failed to fetch tags:", error)
+      }
+    }
 
     fetchCategories()
+    fetchTags()
   }, [])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -56,6 +68,19 @@ export default function CreateProductPage() {
         : [...prev.categoryIds, categoryId],
     }))
   }
+  const handleTagToggle = (tagName: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      tags: prev.tags.includes(tagName)
+        ? prev.tags.filter((id) => id !== tagName)
+        : [...prev.tags, tagName],
+    }))
+  }
+
+  const handleDrop = (files: File[]) => {
+    setFormData((prev) => ({ ...prev, images: files }));
+  };
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -67,15 +92,24 @@ export default function CreateProductPage() {
         description: formData.description,
         price: Number.parseFloat(formData.price),
         stock_quantity: Number.parseInt(formData.stock_quantity),
-        images: formData.images.length > 0 ? formData.images : ["/ceramic-vases.png"],
+        images: formData.images,
         categoryIds: formData.categoryIds,
         tags: formData.tags
-          .split(",")
-          .map((tag) => tag.trim())
-          .filter(Boolean),
       }
 
-      await api.post("/admin/products/create", payload)
+      // title, description, price, stock_quantity, images, categoryIds, tags
+      const fd = new FormData()
+      fd.append("title", payload.title)
+      fd.append("description", payload.description)
+      fd.append("price",  payload.price.toString())
+      fd.append("stock_quantity", payload.stock_quantity.toString())
+      payload.categoryIds.map((cat)=> {fd.append("categoryIds", cat)})
+      payload.images.map((img)=> {fd.append("images", img)})
+      payload.tags.map((t)=> {fd.append("tags", t)})
+      
+      await api.post("/admin/products/create", fd, {
+          headers: { "Content-Type": "multipart/form-data" },
+        })
 
       toast({
         title: "Success",
@@ -154,17 +188,45 @@ export default function CreateProductPage() {
             </div>
 
             <div>
-              <Label htmlFor="tags">Tags (comma-separated)</Label>
-              <Input
-                id="tags"
-                name="tags"
-                value={formData.tags}
-                onChange={handleChange}
-                placeholder="new-arrival, hot-sales"
-              />
-              <p className="mt-1 text-sm text-muted-foreground">
-                Use tags like "new-arrival" or "hot-sales" to feature products
-              </p>
+              <Label htmlFor="link_url">Upload Category Image</Label>
+              <Dropzone onDrop={handleDrop} onError={console.error} src={formData.images} >
+                <DropzoneEmptyState>
+                  <div className="flex w-full items-center gap-4 p-8">
+                    <div className="flex size-16 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+                      <UploadIcon size={24} />
+                    </div>
+                    <div className="text-left">
+                      <p className="font-medium text-sm">Upload a file</p>
+                      <p className="text-muted-foreground text-xs">
+                        Drag and drop or click to upload
+                      </p>
+                    </div>
+                  </div>
+                </DropzoneEmptyState>
+                <DropzoneContent />
+              </Dropzone>
+            </div>
+
+
+            <div>
+              <Label>Tags</Label>
+              <div className="mt-2 space-y-2">
+                {tags.map((tag) => (
+                  <div key={tag.tag_name} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={tag.tag_name}
+                      checked={formData.tags.includes(tag.tag_name)}
+                      onCheckedChange={() => handleTagToggle(tag.tag_name)}
+                    />
+                    <label
+                      htmlFor={tag.tag_name}
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      {tag.tag_name}
+                    </label>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div>

@@ -166,10 +166,10 @@ export default function AdminOrderDetailPage() {
                       <div>
                         <h3 className="font-semibold text-balance">{item.title}</h3>
                         <p className="text-sm text-muted-foreground">
-                          ${item.unit_price.toFixed(2)} × {item.quantity}
+                          ${item.unit_price} × {item.quantity}
                         </p>
                       </div>
-                      <p className="font-semibold">${item.total_price.toFixed(2)}</p>
+                      <p className="font-semibold">${item.total_price}</p>
                     </div>
                   </div>
                 ))}

@@ -11,14 +11,15 @@ class AdminProductRepository {
         [title, description, price, stock_quantity, images]
       );
       const product = productRes.rows[0];
-
+      if(!Array.isArray(categoryIds)) categoryIds = [categoryIds]
       if (categoryIds && categoryIds.length > 0) {
         for (const categoryId of categoryIds) {
           await client.query('INSERT INTO product_categories (product_id, category_id) VALUES ($1, $2)', [product.id, categoryId]);
         }
       }
-
-      if (tags && tags.length > 0) {
+      
+      if(!Array.isArray(tags)) tags = [tags]
+      if (tags && tags.length > 0) { 
         for (const tagName of tags) {
           // Ensure tag exists or create it
           await client.query('INSERT INTO tags (tag_name) VALUES ($1) ON CONFLICT (tag_name) DO NOTHING', [tagName]);
@@ -36,13 +37,27 @@ class AdminProductRepository {
     }
   }
 
-  static async getAllProducts() {
+  static async getAllProductsWithCategory() {
     const res = await pool.query(
       'SELECT p.*, ARRAY_AGG(DISTINCT c.name) AS categories, ARRAY_AGG(DISTINCT t.tag_name) AS tags FROM products p LEFT JOIN product_categories pc ON p.id = pc.product_id LEFT JOIN categories c ON pc.category_id = c.id LEFT JOIN product_tags pt ON p.id = pt.product_id LEFT JOIN tags t ON pt.tag_name = t.tag_name GROUP BY p.id ORDER BY p.created_at DESC'
     );
     return res.rows;
   }
 
+    //   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    // title VARCHAR(255) NOT NULL,
+    // description TEXT,
+    // price DECIMAL(10, 2) NOT NULL,
+    // stock_quantity INTEGER DEFAULT 0,
+    // images TEXT[]
+  
+  static async getAllProducts() {
+    const res = await pool.query(
+      'SELECT p.id, p.title, p.stock_quantity, p.images, ARRAY_AGG(DISTINCT t.tag_name) AS tags FROM products p LEFT JOIN product_tags pt ON p.id = pt.product_id LEFT JOIN tags t ON pt.tag_name = t.tag_name GROUP BY p.id ORDER BY p.created_at DESC'
+    );
+    return res.rows;
+  }
+  
   static async getProductById(id) {
     const res = await pool.query(
       'SELECT p.*, ARRAY_AGG(DISTINCT c.id) AS category_ids, ARRAY_AGG(DISTINCT t.tag_name) AS tags FROM products p LEFT JOIN product_categories pc ON p.id = pc.product_id LEFT JOIN categories c ON pc.category_id = c.id LEFT JOIN product_tags pt ON p.id = pt.product_id LEFT JOIN tags t ON pt.tag_name = t.tag_name WHERE p.id = $1 GROUP BY p.id',

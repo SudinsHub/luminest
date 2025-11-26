@@ -8,12 +8,12 @@ class AdminCarouselController {
       if (!req.files || req.files.length === 0) {
         return res.status(400).json({ message: 'No file uploaded.' });
       }
-      const imageUrl = `/uploads/carousel/${req.files[0].filename}`;
+      const imageUrl = `/uploads/carousel/${req.files.images[0].filename}`;
       const image = await AdminCarouselService.createCarouselImage({ ...req.body, imageUrl });
       res.status(201).json({ message: 'Carousel image created successfully', image });
     } catch (error) {
-      if (req.files && req.files.length > 0) {
-        for (const file of req.files) {
+      if (req.files && req.files.images && req.files.images.length > 0) {
+        for (const file of req.files.images) {
           const filePath = path.join(__dirname, `../uploads/carousel/${file.filename}`);
           fs.unlink(filePath, err => {
             if (err) console.error('Failed to delete file after error:', err.message);
@@ -22,7 +22,7 @@ class AdminCarouselController {
       }
       next(error);
     }
-  }
+  } 
 
   static async getCarouselImages(req, res, next) {
     try {

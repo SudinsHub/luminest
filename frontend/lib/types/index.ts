@@ -122,3 +122,13 @@ export interface Coupon {
   usage_limit: number | null
   used_count: number
 }
+
+export interface Tag {
+  tag_name: string;
+}
+
+export interface ProductTag {
+  id: string;
+  tag_name: string;
+}
+ 

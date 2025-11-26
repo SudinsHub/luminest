@@ -30,9 +30,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (token && role) {
         try {
-          const endpoint = role === "admin" ? "/admin/profile" : "/customer/profile"
+          const endpoint = role === "admin" ? "/auth/admin/profile" : "/auth/customer/profile"
           const response = await api.get(endpoint)
-          setUser(response.data)
+          setUser(response.data.user)
           setUserRole(role)
         } catch (error) {
           localStorage.removeItem("accessToken")

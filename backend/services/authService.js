@@ -57,7 +57,7 @@ class AuthService {
       const { accessToken, refreshToken } = generateTokens({ id: customer.id, role: 'customer' });
       return { accessToken, refreshToken };
     } catch (error) {
-      throw new Error('Invalid refresh token');
+      throw new Error('Invalid refresh token or user not found: ' + error.message);
     }
   }
 
@@ -91,9 +91,43 @@ class AuthService {
       const { accessToken, refreshToken } = generateTokens({ id: admin.id, role: 'admin' });
       return { accessToken, refreshToken };
     } catch (error) {
-      throw new Error('Invalid refresh token');
+      throw new Error('Invalid refresh token or user not found: ' + error.message);
     }
   }
+
+static async findAdminById(id) { 
+  try {      
+    const admin = await AuthRepository.findAdminById(id);
+
+    if (!admin) { 
+      throw new Error('Invalid token');
+    }
+
+    // eslint-disable-next-line no-unused-vars
+    const { password, ...adminWithoutPassword } = admin;
+    return adminWithoutPassword;
+ 
+  } catch (error) {
+    throw new Error('Invalid refresh token or user not found: ' + error.message);
+  }
+}
+
+
+  static async findCustomerById(id) {
+    try {
+      const customer = await AuthRepository.findCustomerById(id);
+      if (!customer) {
+        throw new Error('Invalid token');
+      }
+
+      // eslint-disable-next-line no-unused-vars
+      const { password, ...customerWithoutPass} = customer
+      return customerWithoutPass
+    } catch (error) {
+      throw new Error('Invalid refresh token or user not found: ' + error.message);
+    }
+  }
+
 }
 
 module.exports = AuthService;

@@ -103,7 +103,7 @@ CREATE TABLE coupons (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     code VARCHAR(255) UNIQUE NOT NULL,
     type VARCHAR(50) NOT NULL, -- e.g., 'percentage', 'fixed_amount'
-    value DECIMAL(10, 2) NOT NULL,
+    value DECIMAL(10, 2) NOT NULL, 
     max_discount DECIMAL(10, 2),
     min_order_amount DECIMAL(10, 2) DEFAULT 0.00,
     category_id UUID REFERENCES categories(id) ON DELETE SET NULL,

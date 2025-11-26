@@ -111,10 +111,10 @@ export default function CategoryDetailPage() {
                       <h3 className="mb-2 font-semibold text-balance">{product.title}</h3>
                       <div className="mb-2 flex items-center gap-1">
                         <Star className="h-4 w-4 fill-secondary text-secondary" />
-                        <span className="text-sm">{product.average_rating.toFixed(1)}</span>
+                        <span className="text-sm">{product.average_rating}</span>
                         <span className="text-sm text-muted-foreground">({product.total_reviews})</span>
                       </div>
-                      <p className="text-lg font-bold">${product.price.toFixed(2)}</p>
+                      <p className="text-lg font-bold">${product.price}</p>
                       {product.stock_quantity === 0 && <p className="mt-2 text-sm text-destructive">Out of Stock</p>}
                     </CardContent>
                   </Card>

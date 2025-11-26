@@ -1,16 +1,42 @@
 const AdminProductService = require('../services/adminProductService');
+const path = require('path');
+const fs = require('fs');
 
 class AdminProductController {
   static async createProduct(req, res, next) {
     try {
-      const product = await AdminProductService.createProduct(req.body);
+      if (!req.files ) {
+        return res.status(400).json({ message: 'No file uploaded.' });
+      }
+      const images = [];
+      req.files.images.map(file => {
+        images.push(`/uploads/products/${file.filename}`);
+      });
+      const product = await AdminProductService.createProduct({ ...req.body, images });
       res.status(201).json({ message: 'Product created successfully', product });
+    } catch (error) {
+      if (req.files && req.files.images && req.files.images.length > 0) {
+        for (const file of req.files.images) {
+          const filePath = path.join(__dirname, `../uploads/products/${file.filename}`);
+          fs.unlink(filePath, err => {
+            if (err) console.error('Failed to delete file after error:', err.message);
+          });
+        }
+      }
+      next(error);
+    }
+  }
+
+  static async getAllProductsWithCategory(req, res, next) {
+    try {
+      const products = await AdminProductService.getAllProductsWithCategory();
+      res.status(200).json(products);
     } catch (error) {
       next(error);
     }
   }
 
-  static async getProducts(req, res, next) {
+  static async getAllProducts(req, res, next) {
     try {
       const products = await AdminProductService.getAllProducts();
       res.status(200).json(products);

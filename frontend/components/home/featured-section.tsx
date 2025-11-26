@@ -81,7 +81,7 @@ export function FeaturedSection({ title, tag }: FeaturedSectionProps) {
                     <span className="text-sm">{product.average_rating.toFixed(1)}</span>
                     <span className="text-sm text-muted-foreground">({product.total_reviews})</span>
                   </div>
-                  <p className="text-lg font-bold">${product.price.toFixed(2)}</p>
+                  <p className="text-lg font-bold">${product.price}</p>
                 </CardContent>
               </Card>
             </Link>

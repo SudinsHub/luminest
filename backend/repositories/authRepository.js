@@ -1,4 +1,3 @@
-const pool = require('../config/db');
 const Customer = require('../models/Customer');
 const Admin = require('../models/Admin');
 

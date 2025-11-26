@@ -31,7 +31,7 @@ export default function AdminProductsPage() {
   const fetchProducts = async () => {
     try {
       setIsLoading(true)
-      const response = await api.get("/admin/products")
+      const response = await api.get("/admin/products-with-category")
       setProducts(response.data)
     } catch (error) {
       console.error("Failed to fetch products:", error)
@@ -117,14 +117,14 @@ export default function AdminProductsPage() {
               <CardContent className="p-4">
                 <div className="relative mb-4 h-48 overflow-hidden rounded-lg">
                   <Image
-                    src={product.images[0] || `/placeholder.svg?height=200&width=200&query=${product.title}`}
+                    src={process.env.NEXT_PUBLIC_IMAGE_BASE_URL + product.images[0] || `/placeholder.svg?height=200&width=200&query=${product.title}`}
                     alt={product.title}
                     fill
                     className="object-cover"
                   />
                 </div>
                 <h3 className="mb-2 font-semibold text-balance">{product.title}</h3>
-                <p className="mb-2 text-lg font-bold">${product.price.toFixed(2)}</p>
+                <p className="mb-2 text-lg font-bold">${product.price}</p>
                 <p className="mb-4 text-sm text-muted-foreground">Stock: {product.stock_quantity}</p>
                 <div className="flex gap-2">
                   <Link href={`/admin/products/${product.id}`} className="flex-1">

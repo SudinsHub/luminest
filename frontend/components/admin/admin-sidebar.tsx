@@ -12,7 +12,7 @@ import {
   Ticket,
   ImageIcon,
   Settings,
-  BarChart3,
+  BarChart3, Tags
 } from "lucide-react"
 
 const navigation = [
@@ -24,6 +24,7 @@ const navigation = [
   { name: "Coupons", href: "/admin/coupons", icon: Ticket },
   { name: "Carousel", href: "/admin/carousel", icon: ImageIcon },
   { name: "Analytics", href: "/admin/analytics", icon: BarChart3 },
+  { name: "Tag Management", href: "/admin/tags", icon: Tags },
   { name: "Settings", href: "/admin/settings", icon: Settings },
 ]
 

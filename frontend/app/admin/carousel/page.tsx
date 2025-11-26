@@ -60,7 +60,6 @@ export default function AdminCarouselPage() {
     if (image) {
       setEditingImage(image)
       // get image (file) from image.image_url
-      console.log(`${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}${image.image_url}`);
       
       const imageFile = await fetch(`${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}${image.image_url}`).then((res) => res.blob())
       const file = new File([imageFile], image.alt_text || "carousel-image", { type: imageFile.type })
@@ -85,33 +84,42 @@ export default function AdminCarouselPage() {
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     try {
-      const payload = {
-        images: formData.images,
-        altText: formData.alt_text,
-        displayOrder: Number.parseInt(formData.display_order),
-        isActive: formData.is_active,
+      const formDataToSend = new FormData();
+      if (formData.images && formData.images.length > 0) {
+        for (const image of formData.images) {
+          formDataToSend.append("images", image);
+        }
       }
+      formDataToSend.append("altText", formData.alt_text);
+      formDataToSend.append("displayOrder", formData.display_order);
+      formDataToSend.append("isActive", String(formData.is_active));
 
       if (editingImage) {
-        await api.put(`/admin/carousel/${editingImage.id}`, payload)
-        toast({ title: "Success", description: "Carousel image updated successfully" })
+        await api.put(`/admin/carousel/${editingImage.id}`, formDataToSend, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        toast({ title: "Success", description: "Carousel image updated successfully" });
       } else {
-        await api.post("/admin/carousel/create", payload)
-        toast({ title: "Success", description: "Carousel image created successfully" })
+        await api.post("/admin/carousel/create", formDataToSend, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        toast({ title: "Success", description: "Carousel image created successfully" });
       }
-      setIsDialogOpen(false)
-      fetchImages()
+
+      setIsDialogOpen(false);
+      fetchImages();
     } catch (error: any) {
       toast({
         title: "Error",
         description: error.response?.data?.message || "Failed to save carousel image",
         variant: "destructive",
-      })
+      });
     }
-  }
+  };
+
 
   const handleDelete = async () => {
     if (!deleteId) return
@@ -169,7 +177,7 @@ export default function AdminCarouselPage() {
               </div>
               <div>
                 <Label htmlFor="link_url">Upload Carousel Image</Label>
-                <Dropzone onDrop={handleDrop} onError={console.error} src={formData.images}>
+                <Dropzone onDrop={handleDrop} onError={console.error} src={formData.images} >
                   <DropzoneEmptyState>
                     <div className="flex w-full items-center gap-4 p-8">
                       <div className="flex size-16 items-center justify-center rounded-lg bg-muted text-muted-foreground">

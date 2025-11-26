@@ -11,7 +11,7 @@ const AdminBannerController = require('../controllers/adminBannerController');
 const AdminCustomerController = require('../controllers/adminCustomerController');
 const AdminReviewController = require('../controllers/adminReviewController');
 const { authenticateToken, authorizeRoles } = require('../middleware/authMiddleware');
-const {uploadProductImages, uploadCarouselImages} = require('../middleware/uploadMiddleware');
+const {uploadProductImages, uploadCarouselImages, uploadCategoryImages} = require('../middleware/uploadMiddleware');
 
 const router = express.Router();
 
@@ -21,9 +21,10 @@ router.get('/sales/analytics', authenticateToken, authorizeRoles(['admin']), Adm
 router.get('/orders/analytics', authenticateToken, authorizeRoles(['admin']), AdminDashboardController.getOrderAnalytics);
 
 // Product Management
-router.get('/products', authenticateToken, authorizeRoles(['admin']), AdminProductController.getProducts);
+router.get('/products-with-category', authenticateToken, authorizeRoles(['admin']), AdminProductController.getAllProductsWithCategory);
+router.get('/products', authenticateToken, authorizeRoles(['admin']), AdminProductController.getAllProducts);
 router.get('/products/:id', authenticateToken, authorizeRoles(['admin']), AdminProductController.getProductById);
-router.post('/products/create', authenticateToken, authorizeRoles(['admin']), AdminProductController.createProduct);
+router.post('/products/create', authenticateToken, authorizeRoles(['admin']), uploadProductImages.fields([{ name: 'images'}]), AdminProductController.createProduct);
 router.put('/products/:id', authenticateToken, authorizeRoles(['admin']), AdminProductController.updateProduct);
 router.delete('/products/:id', authenticateToken, authorizeRoles(['admin']), AdminProductController.deleteProduct);
 router.post('/products/:id/images/upload', authenticateToken, authorizeRoles(['admin']), uploadProductImages.single('image'), AdminProductController.uploadProductImage);
@@ -32,7 +33,7 @@ router.delete('/products/:id/images/:imageId', authenticateToken, authorizeRoles
 // Category Management
 router.get('/categories', authenticateToken, authorizeRoles(['admin']), AdminCategoryController.getCategories);
 router.get('/categories/:id', authenticateToken, authorizeRoles(['admin']), AdminCategoryController.getCategoryById);
-router.post('/categories/create', authenticateToken, authorizeRoles(['admin']), AdminCategoryController.createCategory);
+router.post('/categories/create', authenticateToken, authorizeRoles(['admin']),  uploadCategoryImages.fields([{ name: 'images'}]), AdminCategoryController.createCategory);
 router.put('/categories/:id', authenticateToken, authorizeRoles(['admin']), AdminCategoryController.updateCategory);
 router.delete('/categories/:id', authenticateToken, authorizeRoles(['admin']), AdminCategoryController.deleteCategory);
 
@@ -40,6 +41,11 @@ router.delete('/categories/:id', authenticateToken, authorizeRoles(['admin']), A
 router.get('/products/:productId/tags', authenticateToken, authorizeRoles(['admin']), AdminProductTagController.getProductTags);
 router.post('/products/:productId/tags', authenticateToken, authorizeRoles(['admin']), AdminProductTagController.addProductTag);
 router.delete('/products/:productId/tags/:tagId', authenticateToken, authorizeRoles(['admin']), AdminProductTagController.deleteProductTag);
+
+router.get('/tags', authenticateToken, authorizeRoles(['admin']), AdminProductTagController.getTags);
+router.post('/tags', authenticateToken, authorizeRoles(['admin']), AdminProductTagController.createTag); // new
+router.delete('/tags', authenticateToken, authorizeRoles(['admin']), AdminProductTagController.deleteTag); // new 
+router.put('/tags', authenticateToken, authorizeRoles(['admin']), AdminProductTagController.editTag); // new
 
 // Order Management
 router.get('/orders', authenticateToken, authorizeRoles(['admin']), AdminOrderController.getOrders);
@@ -63,7 +69,7 @@ router.get('/coupons/:id/usage-stats', authenticateToken, authorizeRoles(['admin
 
 // Carousel Management
 router.get('/carousel', authenticateToken, authorizeRoles(['admin']), AdminCarouselController.getCarouselImages);
-router.post('/carousel/create', authenticateToken, authorizeRoles(['admin']), uploadCarouselImages.array('images'), AdminCarouselController.createCarousel);
+router.post('/carousel/create', authenticateToken, authorizeRoles(['admin']), uploadCarouselImages.fields([{ name: 'images'}]), AdminCarouselController.createCarousel);
 router.put('/carousel/:id', authenticateToken, authorizeRoles(['admin']), AdminCarouselController.updateCarousel);
 router.delete('/carousel/:id', authenticateToken, authorizeRoles(['admin']), AdminCarouselController.deleteCarousel);
 router.put('/carousel/reorder', authenticateToken, authorizeRoles(['admin']), AdminCarouselController.reorderCarousel);

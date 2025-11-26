@@ -53,7 +53,7 @@ export function CategoriesSection() {
               <Card className="group overflow-hidden transition-shadow hover:shadow-lg">
                 <div className="relative h-48 overflow-hidden">
                   <Image
-                    src={category.image_url || `/placeholder.svg?height=200&width=200&query=${category.name}`}
+                    src={ `${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}${category.image_url}`}
                     alt={category.name}
                     fill
                     className="object-cover transition-transform group-hover:scale-105"

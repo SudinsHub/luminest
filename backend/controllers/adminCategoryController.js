@@ -1,11 +1,24 @@
 const AdminCategoryService = require('../services/adminCategoryService');
-
+const path = require('path');
+const fs = require('fs');
 class AdminCategoryController {
   static async createCategory(req, res, next) {
     try {
-      const category = await AdminCategoryService.createCategory(req.body);
+      if (!req.files || req.files.length === 0) {
+        return res.status(400).json({ message: 'No file uploaded.' });
+      }
+      const imageUrl = `/uploads/categories/${req.files.images[0].filename}`;
+      const category = await AdminCategoryService.createCategory({ ...req.body, imageUrl});
       res.status(201).json({ message: 'Category created successfully', category });
     } catch (error) {
+      if (req.files && req.files.images && req.files.images.length > 0) {
+        for (const file of req.files.images) {
+          const filePath = path.join(__dirname, `../uploads/carousel/${file.filename}`);
+          fs.unlink(filePath, err => {
+            if (err) console.error('Failed to delete file after error:', err.message);
+          });
+        }
+      }
       next(error);
     }
   }

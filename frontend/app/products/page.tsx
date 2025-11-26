@@ -147,7 +147,7 @@ function ProductsContent() {
                         <span className="text-sm">{product.average_rating.toFixed(1)}</span>
                         <span className="text-sm text-muted-foreground">({product.total_reviews})</span>
                       </div>
-                      <p className="text-lg font-bold">${product.price.toFixed(2)}</p>
+                      <p className="text-lg font-bold">${product.price}</p>
                       {product.stock_quantity === 0 && <p className="mt-2 text-sm text-destructive">Out of Stock</p>}
                     </CardContent>
                   </Card>

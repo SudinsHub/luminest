@@ -2,7 +2,12 @@ const AdminProductRepository = require('../repositories/adminProductRepository')
 
 class AdminProductService {
   static async createProduct(productData) {
+    
     return AdminProductRepository.createProduct(productData);
+  }
+
+  static async getAllProductsWithCategory() {
+    return AdminProductRepository.getAllProductsWithCategory();
   }
 
   static async getAllProducts() {

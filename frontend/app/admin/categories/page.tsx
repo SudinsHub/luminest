@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
 import api from "@/lib/api/axios"
 import type { Category } from "@/lib/types"
-import { Plus, Pencil, Trash2 } from "lucide-react"
+import { Plus, Pencil, Trash2, UploadIcon } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import {
   AlertDialog,
@@ -24,6 +24,8 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import Image from "next/image"
+import { Dropzone, DropzoneContent, DropzoneEmptyState } from '@/components/ui/dropzone';
+
 
 export default function AdminCategoriesPage() {
   const { toast } = useToast()
@@ -36,7 +38,7 @@ export default function AdminCategoriesPage() {
     name: "",
     slug: "",
     description: "",
-    imageUrl: "",
+    images: null as unknown as File[],
   })
 
   const fetchCategories = async () => {
@@ -54,18 +56,20 @@ export default function AdminCategoriesPage() {
     fetchCategories()
   }, [])
 
-  const handleOpenDialog = (category?: Category) => {
+  const handleOpenDialog = async(category?: Category) => {
     if (category) {
       setEditingCategory(category)
+      const imageFile = await fetch(`${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}${category.image_url}`).then((res) => res.blob())
+      const file = new File([imageFile], "category-image", { type: imageFile.type })
       setFormData({
         name: category.name,
         slug: category.slug,
         description: category.description,
-        imageUrl: category.image_url,
+        images: [file],
       })
     } else {
       setEditingCategory(null)
-      setFormData({ name: "", slug: "", description: "", imageUrl: "" })
+      setFormData({ name: "", slug: "", description: "", images: null as unknown as File[] })
     }
     setIsDialogOpen(true)
   }
@@ -74,11 +78,21 @@ export default function AdminCategoriesPage() {
     e.preventDefault()
 
     try {
+      const formDataToSend = new FormData();
+      formDataToSend.append("name", formData.name)
+      formDataToSend.append("slug", formData.slug)
+      formDataToSend.append("description", formData.description)
+      if (formData.images && formData.images.length > 0) {
+        formDataToSend.append("images", formData.images[0]) // Assuming single image upload
+      }
       if (editingCategory) {
-        await api.put(`/admin/categories/${editingCategory.id}`, formData)
+        await api.put(`/admin/categories/${editingCategory.id}`, formDataToSend)
         toast({ title: "Success", description: "Category updated successfully" })
       } else {
-        await api.post("/admin/categories/create", formData)
+        await api.post("/admin/categories/create", formDataToSend, {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+        )
         toast({ title: "Success", description: "Category created successfully" })
       }
       setIsDialogOpen(false)
@@ -109,6 +123,10 @@ export default function AdminCategoriesPage() {
       setDeleteId(null)
     }
   }
+
+  const handleDrop = (files: File[]) => {
+    setFormData((prev) => ({ ...prev, images: files }));
+  };
 
   return (
     <div className="space-y-6">
@@ -154,13 +172,23 @@ export default function AdminCategoriesPage() {
                 />
               </div>
               <div>
-                <Label htmlFor="imageUrl">Image URL</Label>
-                <Input
-                  id="imageUrl"
-                  value={formData.imageUrl}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, imageUrl: e.target.value }))}
-                  placeholder="https://..."
-                />
+                <Label htmlFor="link_url">Upload Category Image</Label>
+                <Dropzone onDrop={handleDrop} onError={console.error} src={formData.images} >
+                  <DropzoneEmptyState>
+                    <div className="flex w-full items-center gap-4 p-8">
+                      <div className="flex size-16 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+                        <UploadIcon size={24} />
+                      </div>
+                      <div className="text-left">
+                        <p className="font-medium text-sm">Upload a file</p>
+                        <p className="text-muted-foreground text-xs">
+                          Drag and drop or click to upload
+                        </p>
+                      </div>
+                    </div>
+                  </DropzoneEmptyState>
+                  <DropzoneContent />
+                </Dropzone>
               </div>
               <Button type="submit" className="w-full">
                 {editingCategory ? "Update" : "Create"}
@@ -187,7 +215,7 @@ export default function AdminCategoriesPage() {
               <CardContent className="p-4">
                 <div className="relative mb-4 h-48 overflow-hidden rounded-lg">
                   <Image
-                    src={category.image_url || `/placeholder.svg?height=200&width=200&query=${category.name}`}
+                    src={`${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}${category.image_url}`}
                     alt={category.name}
                     fill
                     className="object-cover"

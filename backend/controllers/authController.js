@@ -90,6 +90,27 @@ class AuthController {
       next(error);
     }
   }
+  
+  static async getAdmin(req, res, next) {
+    try { 
+      const id = req.user.id;
+      const user = await AuthService.findAdminById(id)
+      res.status(200).json({user, message: 'Admin found successfully' });
+    } catch (error) { 
+      next(error);
+    } 
+  }
+
+  static async getCustomer(req, res, next) {
+    try {
+      const id = req.user.id;
+      const user = await AuthService.findCustomerById(id)
+      res.status(200).json({user, message: 'Customer found successfully' });
+    } catch (error) {
+      next(error);
+    }
+  }
+
 }
 
 module.exports = AuthController;

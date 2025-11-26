@@ -97,7 +97,7 @@ export default function CartPage() {
                               <Link href={`/products/${item.product_id}`}>
                                 <h3 className="font-semibold hover:text-secondary text-balance">{item.title}</h3>
                               </Link>
-                              <p className="mt-1 text-lg font-bold">${item.price.toFixed(2)}</p>
+                              <p className="mt-1 text-lg font-bold">${item.price}</p>
                             </div>
 
                             <div className="flex items-center gap-4">
