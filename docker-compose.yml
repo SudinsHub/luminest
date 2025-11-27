@@ -10,25 +10,24 @@ services:
   backend:
     build: ./backend
     restart: always
-    environment:
-      - DB_HOST=db
-      - DB_USER=postgres
-      - DB_PASSWORD=yourpassword
-      - DB_NAME=ecommerce
-    ports:
-      - "5000:5000"
     depends_on:
       - db
+    env_file:
+      - ./backend/.env
+    ports:
+      - "5000:5000"
     volumes:
-      - uploads_data:/app/uploads   # multer volume
+      - uploads_data:/app/uploads
 
   db:
     image: postgres:16
     restart: always
+    env_file:
+      - ./backend/.env   # use SAME credentials from .env for Postgres
     environment:
-      POSTGRES_DB: ecommerce
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: yourpassword
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
     volumes:
       - db_data:/var/lib/postgresql/data
     ports:
