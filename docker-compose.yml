@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   frontend:
     build: ./frontend
@@ -23,11 +21,11 @@ services:
     image: postgres:16
     restart: always
     env_file:
-      - ./backend/.env   # use SAME credentials from .env for Postgres
+      - ./backend/.env
     environment:
-      - POSTGRES_DB=${DB_NAME}
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      POSTGRES_DB: luminestdb
+      POSTGRES_USER: luminest_boss
+      POSTGRES_PASSWORD: 2/10/00/Naimul
     volumes:
       - db_data:/var/lib/postgresql/data
     ports:
