@@ -36,8 +36,6 @@ const initializeDatabase = async () => {
   } catch (err) {
     console.error('Error initializing database schema:', err.message);
     throw err;
-  } finally {
-    await pool.end();
   }
 };
 
