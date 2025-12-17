@@ -71,7 +71,7 @@ class AuthService {
   static async loginAdmin({ email, password }) {
     const admin = await AuthRepository.findAdminByEmail(email);
     if (!admin) {
-      throw new Error('Invalid credentials');
+      throw new Error('User not found With this email');
     }
     const isMatch = await bcrypt.compare(password, admin.password);
     if (!isMatch) {

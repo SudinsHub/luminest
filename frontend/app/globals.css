@@ -88,3 +88,14 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+@theme {
+  --font-century: var(--font-century);
+}
+
+@layer utilities {
+  .font-century {
+    font-family: var(--font-century), sans-serif;
+  }
+}

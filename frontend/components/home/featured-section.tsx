@@ -11,27 +11,26 @@ import { Star } from "lucide-react"
 
 interface FeaturedSectionProps {
   title: string
-  tag: string
 }
 
-export function FeaturedSection({ title, tag }: FeaturedSectionProps) {
+export function FeaturedSection({ title}: FeaturedSectionProps) {
   const [products, setProducts] = useState<Product[]>([])
   const [isLoading, setIsLoading] = useState(true)
-
+ 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await api.get(`/products/tag/${tag}`)
+        const response = await api.get(`/products/tag/${encodeURIComponent(title)}`)
         setProducts(response.data.slice(0, 4))
       } catch (error) {
-        console.error(`Failed to fetch ${tag} products:`, error)
+        console.error(`Failed to fetch ${title} products:`, error)
       } finally {
         setIsLoading(false)
       }
     }
 
     fetchProducts()
-  }, [tag])
+  }, [title])
 
   if (isLoading) {
     return (
@@ -57,7 +56,7 @@ export function FeaturedSection({ title, tag }: FeaturedSectionProps) {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-8 flex items-center justify-between">
           <h2 className="text-3xl font-bold">{title}</h2>
-          <Link href={`/products?tag=${tag}`}>
+          <Link href={`/products?tag=${encodeURIComponent(title)}`}>
             <Button variant="outline">View All</Button>
           </Link>
         </div>
@@ -78,7 +77,7 @@ export function FeaturedSection({ title, tag }: FeaturedSectionProps) {
                   <h3 className="mb-2 font-semibold text-balance">{product.title}</h3>
                   <div className="mb-2 flex items-center gap-1">
                     <Star className="h-4 w-4 fill-secondary text-secondary" />
-                    <span className="text-sm">{product.average_rating.toFixed(1)}</span>
+                    <span className="text-sm">{Number(product.average_rating).toFixed(1)}</span>
                     <span className="text-sm text-muted-foreground">({product.total_reviews})</span>
                   </div>
                   <p className="text-lg font-bold">${product.price}</p>

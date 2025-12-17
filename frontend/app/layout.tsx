@@ -1,14 +1,25 @@
-import { GeistSans } from "geist/font/sans"
-// import { GeistMono } from "geist/font/mono"
-import { Manrope } from "next/font/google"
 import "./globals.css"
 import { AuthProvider } from "@/contexts/auth-context"
 import { CartProvider } from "@/contexts/cart-context"
 import { Toaster } from "@/components/ui/toaster"
+import localFont from "next/font/local"
 
-const manrope = Manrope({
-  subsets: ["latin"],
-  variable: "--font-manrope",
+
+
+const centuryGothic = localFont({
+  src: [
+    {
+      path: "../public/fonts/Century Gothic W05 Regular.woff2",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/Century Gothic Bold.woff2",
+      weight: "700",
+      style: "normal",
+    },
+  ],
+  variable: "--font-century",
 })
 
 export const metadata = {
@@ -19,8 +30,8 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${GeistSans.variable} ${manrope.variable}`}>
-      <body className="font-sans antialiased">
+    <html lang="en" className={`${centuryGothic.variable}`}>
+      <body className="font-century antialiased">
         <AuthProvider>
           <CartProvider>
             {children}

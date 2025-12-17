@@ -9,6 +9,7 @@ const publicCategoryRoutes = require('./routes/publicCategoryRoutes');
 const publicCarouselRoutes = require('./routes/publicCarouselRoutes');
 const publicBannerRoutes = require('./routes/publicBannerRoutes');
 const publicCouponRoutes = require('./routes/publicCouponRoutes');
+const publicTagRoutes = require('./routes/publicTagRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
 
@@ -33,6 +34,7 @@ app.use('/api/banner', publicBannerRoutes);
 app.use('/api/coupons', publicCouponRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/tags', publicTagRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
