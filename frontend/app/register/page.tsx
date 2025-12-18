@@ -86,7 +86,7 @@ export default function RegisterPage() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="mb-2 block text-sm font-medium">Name</label>
-                <Input name="name" value={formData.name} onChange={handleChange} required placeholder="John Doe" />
+                <Input name="name" value={formData.name} onChange={handleChange} required placeholder="Your Name" className="placeholder:opacity-50"/>
               </div>
               <div>
                 <label className="mb-2 block text-sm font-medium">Email</label>
@@ -97,6 +97,7 @@ export default function RegisterPage() {
                   onChange={handleChange}
                   required
                   placeholder="your@email.com"
+                  className="placeholder:opacity-50"
                 />
               </div>
               <div>
@@ -106,7 +107,8 @@ export default function RegisterPage() {
                   value={formData.contact_no}
                   onChange={handleChange}
                   required
-                  placeholder="+1234567890"
+                  placeholder="01234567890"
+                  className="placeholder:opacity-50"
                 />
               </div>
               <div>
@@ -118,6 +120,7 @@ export default function RegisterPage() {
                   required
                   placeholder="123 Main St, City, Country"
                   rows={3}
+                  className="placeholder:opacity-50"
                 />
               </div>
               <div>
@@ -129,6 +132,7 @@ export default function RegisterPage() {
                   onChange={handleChange}
                   required
                   placeholder="••••••••"
+                  className="placeholder:opacity-50"
                 />
               </div>
               <div>
@@ -140,6 +144,7 @@ export default function RegisterPage() {
                   onChange={handleChange}
                   required
                   placeholder="••••••••"
+                  className="placeholder:opacity-50"
                 />
               </div>
               <Button type="submit" className="w-full" disabled={isLoading}>

@@ -11,13 +11,14 @@ import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useToast } from "@/hooks/use-toast"
 import api from "@/lib/api/axios"
-import type { Category } from "@/lib/types"
+import type { Category, Tag } from "@/lib/types"
 
 export default function EditProductPage() {
   const params = useParams()
   const router = useRouter()
   const { toast } = useToast()
   const [categories, setCategories] = useState<Category[]>([])
+  const [tags, setTags] = useState<Tag[]>([])
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -25,7 +26,7 @@ export default function EditProductPage() {
     stock_quantity: "",
     images: [] as string[],
     categoryIds: [] as string[],
-    tags: "",
+    tags: [] as string[],
   })
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
@@ -33,9 +34,10 @@ export default function EditProductPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [productResponse, categoriesResponse] = await Promise.all([
+        const [productResponse, categoriesResponse, tagsResponse] = await Promise.all([
           api.get(`/admin/products/${params.id}`),
           api.get("/admin/categories"),
+          api.get("/admin/tags"),
         ])
 
         const product = productResponse.data
@@ -46,9 +48,10 @@ export default function EditProductPage() {
           stock_quantity: product.stock_quantity.toString(),
           images: product.images,
           categoryIds: product.category_ids || [],
-          tags: product.tags.join(", "),
+          tags: product.tags || [],
         })
         setCategories(categoriesResponse.data)
+        setTags(tagsResponse.data)
       } catch (error) {
         console.error("Failed to fetch product:", error)
         toast({
@@ -80,6 +83,15 @@ export default function EditProductPage() {
     }))
   }
 
+  const handleTagToggle = (tagName: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      tags: prev.tags.includes(tagName)
+        ? prev.tags.filter((name) => name !== tagName)
+        : [...prev.tags, tagName],
+    }))
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSaving(true)
@@ -92,10 +104,7 @@ export default function EditProductPage() {
         stock_quantity: Number.parseInt(formData.stock_quantity),
         images: formData.images,
         categoryIds: formData.categoryIds,
-        tags: formData.tags
-          .split(",")
-          .map((tag) => tag.trim())
-          .filter(Boolean),
+        tags: formData.tags,
       }
 
       await api.put(`/admin/products/${params.id}`, payload)
@@ -190,14 +199,24 @@ export default function EditProductPage() {
             </div>
 
             <div>
-              <Label htmlFor="tags">Tags (comma-separated)</Label>
-              <Input
-                id="tags"
-                name="tags"
-                value={formData.tags}
-                onChange={handleChange}
-                placeholder="new-arrival, hot-sales"
-              />
+              <Label>Tags</Label>
+              <div className="mt-2 space-y-2">
+                {tags.map((tag) => (
+                  <div key={tag.tag_name} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={tag.tag_name}
+                      checked={formData.tags.includes(tag.tag_name)}
+                      onCheckedChange={() => handleTagToggle(tag.tag_name)}
+                    />
+                    <label
+                      htmlFor={tag.tag_name}
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      {tag.tag_name}
+                    </label>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div>
