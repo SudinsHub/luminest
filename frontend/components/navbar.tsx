@@ -50,35 +50,31 @@ export function Navbar() {
 
             {user ? (
               <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    size="icon"
-                    onClick={() => console.log("User icon clicked")}
-                  >
+                <DropdownMenuTrigger>
+                  <Button variant="ghost" size="icon">
                     <User className="h-5 w-5" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent 
-                  align="end" 
-                  className="z-[100] w-48"
-                  sideOffset={5}
-                >
+
+                <DropdownMenuContent align="end" className="w-48">
                   <DropdownMenuItem asChild>
-                    <Link href={userRole === "admin" ? "/313admins" : "/profile"} className="cursor-pointer">
+                    <Link href={userRole === "admin" ? "/313admins" : "/profile"}>
                       {userRole === "admin" ? "Admin Dashboard" : "My Profile"}
                     </Link>
                   </DropdownMenuItem>
+
                   {userRole === "customer" && (
                     <DropdownMenuItem asChild>
-                      <Link href="/orders" className="cursor-pointer">My Orders</Link>
+                      <Link href="/orders">My Orders</Link>
                     </DropdownMenuItem>
                   )}
-                  <DropdownMenuItem onClick={logout} className="cursor-pointer">
+
+                  <DropdownMenuItem onClick={logout}>
                     Logout
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+
             ) : (
               <Link href="/login">
                 <Button variant="outline" size="sm">
