@@ -1,24 +1,8 @@
 -- Create extensions
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- Drop existing tables to ensure a clean slate (optional, for development)
-DROP TABLE IF EXISTS banner CASCADE;
-DROP TABLE IF EXISTS carousel_images CASCADE;
-DROP TABLE IF EXISTS order_items CASCADE;
-DROP TABLE IF EXISTS orders CASCADE;
-DROP TABLE IF EXISTS carts CASCADE;
-DROP TABLE IF EXISTS coupons CASCADE;
-DROP TABLE IF EXISTS reviews CASCADE;
-DROP TABLE IF EXISTS product_tags CASCADE;
-DROP TABLE IF EXISTS tags CASCADE;
-DROP TABLE IF EXISTS product_categories CASCADE;
-DROP TABLE IF EXISTS products CASCADE;
-DROP TABLE IF EXISTS categories CASCADE;
-DROP TABLE IF EXISTS admins CASCADE;
-DROP TABLE IF EXISTS customers CASCADE;
-
 -- USERS Table
-CREATE TABLE customers (
+CREATE TABLE IF NOT EXISTS customers (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(255) NOT NULL,
     address TEXT,
@@ -30,7 +14,7 @@ CREATE TABLE customers (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE admins (
+CREATE TABLE IF NOT EXISTS admins (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
@@ -40,7 +24,7 @@ CREATE TABLE admins (
 );
 
 -- CATEGORIES Table
-CREATE TABLE categories (
+CREATE TABLE IF NOT EXISTS categories (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(255) UNIQUE NOT NULL,
     slug VARCHAR(255) UNIQUE NOT NULL,
@@ -51,7 +35,7 @@ CREATE TABLE categories (
 );
 
 -- PRODUCTS Table
-CREATE TABLE products (
+CREATE TABLE IF NOT EXISTS products (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     title VARCHAR(255) NOT NULL,
     description TEXT,
@@ -65,20 +49,20 @@ CREATE TABLE products (
 );
 
 -- PRODUCT_CATEGORIES Table (Many-to-Many relationship between Products and Categories)
-CREATE TABLE product_categories (
+CREATE TABLE IF NOT EXISTS product_categories (
     product_id UUID NOT NULL REFERENCES products(id) ON DELETE CASCADE,
     category_id UUID NOT NULL REFERENCES categories(id) ON DELETE CASCADE,
     PRIMARY KEY (product_id, category_id)
 );
 
 -- TAGS Table
-CREATE TABLE tags (
+CREATE TABLE IF NOT EXISTS tags (
     tag_name VARCHAR(255) PRIMARY KEY,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 -- PRODUCT_TAGS Table
-CREATE TABLE product_tags (
+CREATE TABLE IF NOT EXISTS product_tags (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     product_id UUID NOT NULL REFERENCES products(id) ON DELETE CASCADE,
     tag_name VARCHAR(255) NOT NULL REFERENCES tags(tag_name) ON DELETE CASCADE,
@@ -87,7 +71,7 @@ CREATE TABLE product_tags (
 );
 
 -- REVIEWS Table
-CREATE TABLE reviews (
+CREATE TABLE IF NOT EXISTS reviews (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     product_id UUID NOT NULL REFERENCES products(id) ON DELETE CASCADE,
     customer_id UUID NOT NULL REFERENCES customers(id) ON DELETE CASCADE,
@@ -99,11 +83,11 @@ CREATE TABLE reviews (
 );
 
 -- COUPONS Table
-CREATE TABLE coupons (
+CREATE TABLE IF NOT EXISTS coupons (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     code VARCHAR(255) UNIQUE NOT NULL,
     type VARCHAR(50) NOT NULL, -- e.g., 'percentage', 'fixed_amount'
-    value DECIMAL(10, 2) NOT NULL, 
+    value DECIMAL(10, 2) NOT NULL,
     max_discount DECIMAL(10, 2),
     min_order_amount DECIMAL(10, 2) DEFAULT 0.00,
     category_id UUID REFERENCES categories(id) ON DELETE SET NULL,
@@ -119,7 +103,7 @@ CREATE TABLE coupons (
 );
 
 -- CARTS Table (Many-to-many relationship with additional quantity field)
-CREATE TABLE carts (
+CREATE TABLE IF NOT EXISTS carts (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     customer_id UUID NOT NULL REFERENCES customers(id) ON DELETE CASCADE,
     product_id UUID NOT NULL REFERENCES products(id) ON DELETE CASCADE,
@@ -130,7 +114,7 @@ CREATE TABLE carts (
 );
 
 -- ORDERS Table
-CREATE TABLE orders (
+CREATE TABLE IF NOT EXISTS orders (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     order_number VARCHAR(255) UNIQUE NOT NULL,
     customer_id UUID NOT NULL REFERENCES customers(id) ON DELETE RESTRICT,
@@ -152,7 +136,7 @@ CREATE TABLE orders (
 );
 
 -- ORDER_ITEMS Table
-CREATE TABLE order_items (
+CREATE TABLE IF NOT EXISTS order_items (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     order_id UUID NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
     product_id UUID NOT NULL REFERENCES products(id) ON DELETE RESTRICT,
@@ -163,7 +147,7 @@ CREATE TABLE order_items (
 );
 
 -- CAROUSEL_IMAGES Table
-CREATE TABLE carousel_images (
+CREATE TABLE IF NOT EXISTS carousel_images (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     image_url VARCHAR(255) NOT NULL,
     alt_text VARCHAR(255),
@@ -175,7 +159,7 @@ CREATE TABLE carousel_images (
 );
 
 -- BANNER Table
-CREATE TABLE banner (
+CREATE TABLE IF NOT EXISTS banner (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     message TEXT NOT NULL,
     is_active BOOLEAN DEFAULT FALSE,
@@ -184,9 +168,9 @@ CREATE TABLE banner (
 );
 
 -- Indexes for frequently queried columns
-CREATE INDEX idx_products_title ON products(title);
-CREATE INDEX idx_products_price ON products(price);
-CREATE INDEX idx_products_category ON product_categories(category_id);
-CREATE INDEX idx_reviews_product_id ON reviews(product_id);
-CREATE INDEX idx_orders_customer_id ON orders(customer_id);
-CREATE INDEX idx_orders_order_status ON orders(order_status);
+CREATE INDEX IF NOT EXISTS idx_products_title ON products(title);
+CREATE INDEX IF NOT EXISTS idx_products_price ON products(price);
+CREATE INDEX IF NOT EXISTS idx_products_category ON product_categories(category_id);
+CREATE INDEX IF NOT EXISTS idx_reviews_product_id ON reviews(product_id);
+CREATE INDEX IF NOT EXISTS idx_orders_customer_id ON orders(customer_id);
+CREATE INDEX IF NOT EXISTS idx_orders_order_status ON orders(order_status);
