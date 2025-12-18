@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -12,8 +12,8 @@ import { useToast } from "@/hooks/use-toast"
 import api from "@/lib/api/axios"
 import type { Category, Tag } from "@/lib/types"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Dropzone, DropzoneContent, DropzoneEmptyState } from "@/components/ui/dropzone"
-import { UploadIcon } from "lucide-react"
+import { useDropzone } from "react-dropzone"
+import { UploadIcon, X } from "lucide-react"
 
 export default function CreateProductPage() {
   const router = useRouter()
@@ -30,6 +30,7 @@ export default function CreateProductPage() {
     tags: [] as string[],
   })
   const [isLoading, setIsLoading] = useState(false)
+  const [previews, setPreviews] = useState<string[]>([])
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -53,6 +54,40 @@ export default function CreateProductPage() {
     fetchTags()
   }, [])
 
+  // Cleanup previews on unmount
+  useEffect(() => {
+    return () => {
+      previews.forEach(preview => URL.revokeObjectURL(preview))
+    }
+  }, [previews])
+
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    setFormData((prev) => ({
+      ...prev,
+      images: [...prev.images, ...acceptedFiles]
+    }))
+
+    const newPreviews = acceptedFiles.map(file => URL.createObjectURL(file))
+    setPreviews(prev => [...prev, ...newPreviews])
+  }, [])
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp']
+    },
+    multiple: true
+  })
+
+  const removeImage = (index: number) => {
+    URL.revokeObjectURL(previews[index])
+    setFormData(prev => ({
+      ...prev,
+      images: prev.images.filter((_, i) => i !== index)
+    }))
+    setPreviews(prev => prev.filter((_, i) => i !== index))
+  }
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData((prev) => ({
       ...prev,
@@ -68,6 +103,7 @@ export default function CreateProductPage() {
         : [...prev.categoryIds, categoryId],
     }))
   }
+
   const handleTagToggle = (tagName: string) => {
     setFormData((prev) => ({
       ...prev,
@@ -76,11 +112,6 @@ export default function CreateProductPage() {
         : [...prev.tags, tagName],
     }))
   }
-
-  const handleDrop = (files: File[]) => {
-    setFormData((prev) => ({ ...prev, images: files }));
-  };
-
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -97,19 +128,18 @@ export default function CreateProductPage() {
         tags: formData.tags
       }
 
-      // title, description, price, stock_quantity, images, categoryIds, tags
       const fd = new FormData()
       fd.append("title", payload.title)
       fd.append("description", payload.description)
-      fd.append("price",  payload.price.toString())
+      fd.append("price", payload.price.toString())
       fd.append("stock_quantity", payload.stock_quantity.toString())
-      payload.categoryIds.map((cat)=> {fd.append("categoryIds", cat)})
-      payload.images.map((img)=> {fd.append("images", img)})
-      payload.tags.map((t)=> {fd.append("tags", t)})
-      
+      payload.categoryIds.map((cat) => { fd.append("categoryIds", cat) })
+      payload.images.map((img) => { fd.append("images", img) })
+      payload.tags.map((t) => { fd.append("tags", t) })
+
       await api.post("/admin/products/create", fd, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
+        headers: { "Content-Type": "multipart/form-data" },
+      })
 
       toast({
         title: "Success",
@@ -188,25 +218,56 @@ export default function CreateProductPage() {
             </div>
 
             <div>
-              <Label htmlFor="link_url">Upload Category Image</Label>
-              <Dropzone onDrop={handleDrop} onError={console.error} src={formData.images} >
-                <DropzoneEmptyState>
-                  <div className="flex w-full items-center gap-4 p-8">
-                    <div className="flex size-16 items-center justify-center rounded-lg bg-muted text-muted-foreground">
-                      <UploadIcon size={24} />
-                    </div>
-                    <div className="text-left">
-                      <p className="font-medium text-sm">Upload a file</p>
-                      <p className="text-muted-foreground text-xs">
-                        Drag and drop or click to upload
+              <Label>Upload Product Images</Label>
+              <div
+                {...getRootProps()}
+                className={`mt-2 border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
+                  isDragActive
+                    ? 'border-primary bg-primary/5'
+                    : 'border-muted-foreground/25 hover:border-muted-foreground/50'
+                }`}
+              >
+                <input {...getInputProps()} />
+                <div className="flex flex-col items-center gap-2">
+                  <div className="flex size-16 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+                    <UploadIcon size={24} />
+                  </div>
+                  <div>
+                    <p className="font-medium text-sm">
+                      {isDragActive ? 'Drop images here' : 'Upload images'}
+                    </p>
+                    <p className="text-muted-foreground text-xs">
+                      Drag and drop or click to upload multiple images
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Image Previews */}
+              {previews.length > 0 && (
+                <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {previews.map((preview, index) => (
+                    <div key={index} className="relative group">
+                      <img
+                        src={preview}
+                        alt={`Preview ${index + 1}`}
+                        className="w-full h-32 object-cover rounded-lg border"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeImage(index)}
+                        className="absolute top-2 right-2 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <X size={16} />
+                      </button>
+                      <p className="text-xs text-muted-foreground mt-1 truncate">
+                        {formData.images[index]?.name}
                       </p>
                     </div>
-                  </div>
-                </DropzoneEmptyState>
-                <DropzoneContent />
-              </Dropzone>
+                  ))}
+                </div>
+              )}
             </div>
-
 
             <div>
               <Label>Tags</Label>
