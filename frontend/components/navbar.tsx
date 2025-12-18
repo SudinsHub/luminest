@@ -52,7 +52,7 @@ export function Navbar() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon">
-                    <User className="h-5 w-5" />
+                    <User className="h-5 w-5 pointer-events-auto" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="z-[60]">
