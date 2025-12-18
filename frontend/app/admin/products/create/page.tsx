@@ -116,7 +116,7 @@ export default function CreateProductPage() {
         description: "Product created successfully",
       })
 
-      router.push("/admin/products")
+      router.push("/313admins/products")
     } catch (error: any) {
       toast({
         title: "Error",

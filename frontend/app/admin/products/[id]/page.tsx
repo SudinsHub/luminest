@@ -105,7 +105,7 @@ export default function EditProductPage() {
         description: "Product updated successfully",
       })
 
-      router.push("/admin/products")
+      router.push("/313admins/products")
     } catch (error: any) {
       toast({
         title: "Error",

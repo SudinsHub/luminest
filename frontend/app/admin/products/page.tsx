@@ -76,7 +76,7 @@ export default function AdminProductsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Products</h1>
-        <Link href="/admin/products/create">
+        <Link href="/313admins/products/create">
           <Button>
             <Plus className="mr-2 h-4 w-4" />
             Add Product
@@ -127,7 +127,7 @@ export default function AdminProductsPage() {
                 <p className="mb-2 text-lg font-bold">${product.price}</p>
                 <p className="mb-4 text-sm text-muted-foreground">Stock: {product.stock_quantity}</p>
                 <div className="flex gap-2">
-                  <Link href={`/admin/products/${product.id}`} className="flex-1">
+                  <Link href={`/313admins/products/${product.id}`} className="flex-1">
                     <Button variant="outline" className="w-full bg-transparent">
                       <Pencil className="mr-2 h-4 w-4" />
                       Edit

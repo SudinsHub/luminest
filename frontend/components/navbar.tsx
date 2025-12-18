@@ -55,9 +55,9 @@ export function Navbar() {
                     <User className="h-5 w-5" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
+                <DropdownMenuContent align="end" className="z-[60]">
                   <DropdownMenuItem asChild>
-                    <Link href={userRole === "admin" ? "/admin" : "/profile"}>
+                    <Link href={userRole === "admin" ? "/313admins" : "/profile"}>
                       {userRole === "admin" ? "Admin Dashboard" : "My Profile"}
                     </Link>
                   </DropdownMenuItem>

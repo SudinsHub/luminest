@@ -55,7 +55,7 @@ export default function LoginPage() {
         title: "Success",
         description: "Logged in successfully",
       })
-      router.push("/admin")
+      router.push("/313admins")
     } catch (error: any) {
       toast({
         title: "Error",

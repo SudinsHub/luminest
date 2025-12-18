@@ -16,16 +16,16 @@ import {
 } from "lucide-react"
 
 const navigation = [
-  { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
-  { name: "Products", href: "/admin/products", icon: Package },
-  { name: "Orders", href: "/admin/orders", icon: ShoppingCart },
-  { name: "Customers", href: "/admin/customers", icon: Users },
-  { name: "Categories", href: "/admin/categories", icon: Tag },
-  { name: "Coupons", href: "/admin/coupons", icon: Ticket },
-  { name: "Carousel", href: "/admin/carousel", icon: ImageIcon },
-  { name: "Analytics", href: "/admin/analytics", icon: BarChart3 },
-  { name: "Tag Management", href: "/admin/tags", icon: Tags },
-  { name: "Settings", href: "/admin/settings", icon: Settings },
+  { name: "Dashboard", href: "/313admins", icon: LayoutDashboard },
+  { name: "Products", href: "/313admins/products", icon: Package },
+  { name: "Orders", href: "/313admins/orders", icon: ShoppingCart },
+  { name: "Customers", href: "/313admins/customers", icon: Users },
+  { name: "Categories", href: "/313admins/categories", icon: Tag },
+  { name: "Coupons", href: "/313admins/coupons", icon: Ticket },
+  { name: "Carousel", href: "/313admins/carousel", icon: ImageIcon },
+  { name: "Analytics", href: "/313admins/analytics", icon: BarChart3 },
+  { name: "Tag Management", href: "/313admins/tags", icon: Tags },
+  { name: "Settings", href: "/313admins/settings", icon: Settings },
 ]
 
 export function AdminSidebar() {
@@ -34,7 +34,7 @@ export function AdminSidebar() {
   return (
     <div className="flex h-screen w-64 flex-col border-r bg-card">
       <div className="flex h-16 items-center border-b px-6">
-        <Link href="/admin" className="flex items-center gap-2">
+        <Link href="/313admins" className="flex items-center gap-2">
           <div className="h-8 w-8 rounded-full bg-secondary" />
           <span className="text-xl font-bold">Luminest Admin</span>
         </Link>
