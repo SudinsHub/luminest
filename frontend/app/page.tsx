@@ -27,7 +27,7 @@ export default function HomePage() {
   }, [])
   return (
     <div className="flex min-h-screen flex-col">
-      <Banner />
+      {/* <Banner /> */}
       <Navbar />
       <main className="flex-1">
         <HeroCarousel />
