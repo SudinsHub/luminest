@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { useAuth } from "@/contexts/auth-context"
-import { User, OptionIcon } from "lucide-react"
+import { User, EllipsisVertical } from "lucide-react"
 import { useIsMobile } from "@/hooks/use-mobile"
 
 export function AdminHeader() {
@@ -27,36 +27,39 @@ export function AdminHeader() {
       <div>
         <h2 className="text-xl font-semibold">Admin Panel</h2>
       </div>
-
-      <DropdownMenu>
-        <DropdownMenuTrigger>
-          <Button variant="ghost" size="icon">
-            <User className="h-5 w-5" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem disabled>
-            <span className="text-sm text-muted-foreground">{(user as any)?.email}</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-      {isMobile &&
+      <div className="flex items-center">
         <DropdownMenu>
           <DropdownMenuTrigger>
             <Button variant="ghost" size="icon">
-              <OptionIcon className="h-5 w-5" />
+              <User className="h-5 w-5" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            {navigation.map((item) => (
-              <DropdownMenuItem key={item.name}>
-                <a href={item.href}>{item.name}</a>
-              </DropdownMenuItem>
-            ))}
+            <DropdownMenuItem disabled>
+              <span className="text-sm text-muted-foreground">{(user as any)?.email}</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      }
+        {isMobile &&
+          <div className="ml-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <Button variant="ghost" size="icon">
+                  <EllipsisVertical className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {navigation.map((item) => (
+                  <DropdownMenuItem key={item.name}>
+                    <a href={item.href}>{item.name}</a>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        }
+      </div>
     </header>
   )
 }
