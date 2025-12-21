@@ -12,11 +12,11 @@
   --popover-foreground: #000000;
   --primary: #000000;
   --primary-foreground: #ffffff;
-  --secondary: #e0af0b;
+  --secondary: #ea9425;
   --secondary-foreground: #ffffff;
   --muted: #e0e0e0;
   --muted-foreground: #000000;
-  --accent: #e0af0b;
+  --accent: #ea9425;
   --accent-foreground: #ffffff;
   --destructive: #ff4d4d;
   --destructive-foreground: #ffffff;
@@ -31,7 +31,7 @@
   --radius: 0.5rem;
   --sidebar: #ffffff;
   --sidebar-foreground: #000000;
-  --sidebar-primary: #e0af0b;
+  --sidebar-primary: #ea9425;
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #e0e0e0;
   --sidebar-accent-foreground: #000000;
