@@ -20,7 +20,7 @@ export function Navbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
             <div className="h-10 w-10 rounded-full bg-secondary" />
-            <span className="text-3xl font-bold">Luminest</span>
+            <span className="text-3xl font-semibold">Luminest</span>
           </Link>
 
           {/* Desktop Navigation */}

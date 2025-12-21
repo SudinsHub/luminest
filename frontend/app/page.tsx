@@ -27,16 +27,21 @@ export default function HomePage() {
   }, [])
   return (
     <div className="flex min-h-screen flex-col">
-      {/* <Banner /> */}
-      <Navbar />
-      <main className="flex-1">
+      {/* Top hero section */}
+      <section className="h-screen flex flex-col">
+        <Navbar />
         <HeroCarousel />
+      </section>
+
+      <main className="flex-1">
         {tags.map((tag) => (
           <FeaturedSection key={tag.tag_name} title={tag.tag_name} />
         ))}
         <CategoriesSection />
       </main>
+
       <Footer />
     </div>
+
   )
 }
