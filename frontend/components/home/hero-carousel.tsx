@@ -54,7 +54,7 @@ export function HeroCarousel() {
   }
 
   return (
-    <div className="relative h-[400px] w-full overflow-hidden md:h-[600px]">
+    <div className="relative h-[400px] w-full overflow-hidden md:h-screen">
       {images.map((image, index) => (
         <div
           key={image.id}
