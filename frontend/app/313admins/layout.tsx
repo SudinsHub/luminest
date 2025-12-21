@@ -26,9 +26,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     )
   }
 
-  if (!user || userRole !== "admin") {
-    return null
-  }
 
   return (
     <div className="flex h-screen">
