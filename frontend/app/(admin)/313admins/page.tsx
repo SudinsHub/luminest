@@ -113,7 +113,7 @@ export default function AdminDashboard() {
           {stats?.recentOrders && stats.recentOrders.length > 0 ? (
             <div className="space-y-4">
               {stats.recentOrders.map((order) => (
-                <Link key={order.id} href={`/admin/orders/${order.id}`}>
+                <Link key={order.id} href={`/313admins/orders/${order.id}`}>
                   <div className="flex items-center justify-between rounded-lg border p-4 transition-colors hover:bg-muted">
                     <div>
                       <p className="font-semibold">Order #{order.order_number}</p>

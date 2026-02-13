@@ -199,7 +199,7 @@ export default function ProductDetailPage() {
                   ))}
                 </div>
                 <span className="text-sm text-muted-foreground">
-                  {product.average_rating.toFixed(1)} ({product.total_reviews} reviews)
+                  {Number(product.average_rating).toFixed(1)} ({product.total_reviews} reviews)
                 </span>
               </div>
 

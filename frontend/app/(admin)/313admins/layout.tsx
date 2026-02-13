@@ -7,14 +7,15 @@ import { useRouter } from "next/navigation"
 import { useAuth } from "@/contexts/auth-context"
 import { AdminSidebar } from "@/components/admin/admin-sidebar"
 import { AdminHeader } from "@/components/admin/admin-header"
-
+import { useIsMobile } from "@/hooks/use-mobile"
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const { user, userRole, isLoading } = useAuth()
+  const isMobile = useIsMobile()
 
   useEffect(() => {
     if (!isLoading && (!user || userRole !== "admin")) {
-      router.push("/login")
+      router.push("/313admins/login")
     }
   }, [user, userRole, isLoading, router])
 
@@ -26,13 +27,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     )
   }
 
-  if (!user || userRole !== "admin") {
-    return null
-  }
 
   return (
     <div className="flex h-screen">
-      <AdminSidebar />
+      {!isMobile && <AdminSidebar />}
       <div className="flex flex-1 flex-col overflow-hidden">
         <AdminHeader />
         <main className="flex-1 overflow-y-auto bg-background p-6">{children}</main>

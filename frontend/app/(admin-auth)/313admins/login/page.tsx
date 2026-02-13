@@ -16,21 +16,23 @@ export default function LoginPage() {
   const { toast } = useToast()
   const { login } = useAuth()
 
-  const [customerEmail, setCustomerEmail] = useState("")
-  const [customerPassword, setCustomerPassword] = useState("")
+  const [adminEmail, setAdminEmail] = useState("")
+  const [adminPassword, setAdminPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
 
-  const handleCustomerLogin = async (e: React.FormEvent) => {
+
+
+  const handleAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
 
     try {
-      await login(customerEmail, customerPassword, "customer")
+      await login(adminEmail, adminPassword, "admin")
       toast({
         title: "Success",
         description: "Logged in successfully",
       })
-      router.push("/")
+      router.push("/313admins")
     } catch (error: any) {
       toast({
         title: "Error",
@@ -52,46 +54,39 @@ export default function LoginPage() {
           </Link>
         </div>
         <Card>
-          <CardHeader>
-            <CardTitle>Customer Login</CardTitle>
-            <CardDescription>Sign in to your customer account</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleCustomerLogin} className="space-y-4">
-              <div>
+            <CardHeader>
+            <CardTitle>Admin Login</CardTitle>
+            <CardDescription>Sign in to the admin dashboard</CardDescription>
+            </CardHeader>
+            <CardContent>
+            <form onSubmit={handleAdminLogin} className="space-y-4">
+                <div>
                 <label className="mb-2 block text-sm font-medium">Email</label>
                 <Input
-                  type="email"
-                  value={customerEmail}
-                  onChange={(e) => setCustomerEmail(e.target.value)}
-                  required
-                  placeholder="your@email.com"
-                  className="placeholder:opacity-50"
+                    type="email"
+                    value={adminEmail}
+                    onChange={(e) => setAdminEmail(e.target.value)}
+                    required
+                    placeholder="admin@luminest.com"
+                    className="placeholder:opacity-50"
                 />
-              </div>
-              <div>
+                </div>
+                <div>
                 <label className="mb-2 block text-sm font-medium">Password</label>
                 <Input
-                  type="password"
-                  value={customerPassword}
-                  onChange={(e) => setCustomerPassword(e.target.value)}
-                  required
-                  placeholder="••••••••"
-                  className="placeholder:opacity-50"
+                    type="password"
+                    value={adminPassword}
+                    onChange={(e) => setAdminPassword(e.target.value)}
+                    required
+                    placeholder="••••••••"
+                    className="placeholder:opacity-50"
                 />
-              </div>
-              <Button type="submit" className="w-full" disabled={isLoading}>
+                </div>
+                <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? "Logging in..." : "Login"}
-              </Button>
+                </Button>
             </form>
-
-            <div className="mt-4 text-center text-sm">
-              {"Don't have an account? "}
-              <Link href="/register" className="font-medium text-secondary hover:underline">
-                Register
-              </Link>
-            </div>
-          </CardContent>
+            </CardContent>
         </Card>
       </div>
     </div>
