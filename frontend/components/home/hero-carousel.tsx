@@ -89,16 +89,29 @@ export function HeroCarousel() {
 
       {/* Content */}
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="text-center text-white">
-          <h1 className="mb-4 text-4xl font-bold md:text-6xl">Luminest</h1>
-          <p className="mb-8 text-lg md:text-xl">Brightening your everyday</p>
+        <div className="text-center text-white flex flex-col items-center">
+
+          {/* SVG logo */}
+          <img
+            src="/luminest_hero_new.svg"
+            alt="Luminest"
+            className="w-full max-w-[520px] brightness-0 invert mb-6"
+          />
+
+          {/* tagline */}
+          <p className="w-full max-w-[520px] text-xl md:text-2xl font-medium mb-10">
+            Brightening your everyday
+          </p>
+
           <Link href="/products">
-            <Button size="lg" className="bg-secondary hover:bg-secondary/90">
+            <Button size="lg" className="bg-secondary hover:bg-secondary/90 px-8 py-6 text-lg">
               Shop Now
             </Button>
           </Link>
+
         </div>
       </div>
+
 
       {/* Navigation Buttons */}
       <Button

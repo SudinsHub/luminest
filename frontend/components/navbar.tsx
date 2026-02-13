@@ -7,6 +7,7 @@ import { useAuth } from "@/contexts/auth-context"
 import { useCart } from "@/contexts/cart-context"
 import { useState } from "react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import Image from "next/image"
 
 export function Navbar() {
   const { user, userRole, logout } = useAuth()
@@ -19,8 +20,10 @@ export function Navbar() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <div className="h-10 w-10 rounded-full bg-secondary" />
-            <span className="text-xl font-bold">Luminest</span>
+            {/* <div className="h-10 w-10 rounded-full bg-secondary"> */}
+              <Image src="/FF9600 Solution-06.png" alt="Luminest Logo" width={200} height={20} className="object-cover " />
+            {/* </div> */}
+            
           </Link>
 
           {/* Desktop Navigation */}
