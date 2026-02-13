@@ -31,6 +31,12 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${centuryGothic.variable}`}>
+      {/* svg logo as header */}
+      <head>
+        <link rel="icon" href="/luminest_logo.svg" type="image/svg+xml"/>
+        
+      </head>
+
       <body className="font-century antialiased">
         <AuthProvider>
           <CartProvider>
