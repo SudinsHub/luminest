@@ -151,7 +151,7 @@ export default function CartPage() {
                       <div className="border-t pt-2">
                         <div className="flex justify-between text-lg font-bold">
                           <span>Total</span>
-                          <span>${cartTotal.toFixed(2)}</span>
+                          <span>৳{Number(cartTotal).toFixed(2)}</span>
                         </div>
                       </div>
                     </div>

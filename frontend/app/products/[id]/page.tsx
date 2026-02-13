@@ -15,7 +15,7 @@ import { useAuth } from "@/contexts/auth-context"
 import { useCart } from "@/contexts/cart-context"
 import api from "@/lib/api/axios"
 import type { Product } from "@/lib/types"
-import { Star, ShoppingCart, Minus, Plus } from "lucide-react"
+import { Star, ShoppingCart, Minus, Plus, ChevronLeft, ChevronRight } from "lucide-react"
 
 export default function ProductDetailPage() {
   const params = useParams()
@@ -151,7 +151,7 @@ export default function ProductDetailPage() {
           <div className="grid gap-8 lg:grid-cols-2">
             {/* Images */}
             <div>
-              <div className="mb-4 overflow-hidden rounded-lg">
+              <div className="relative mb-4 overflow-hidden rounded-lg">
                 <Image
                   src={product.images[selectedImage] || `/placeholder.svg?height=600&width=600&query=${product.title}`}
                   alt={product.title}
@@ -159,6 +159,28 @@ export default function ProductDetailPage() {
                   height={600}
                   className="h-auto w-full object-cover"
                 />
+                {product.images.length > 1 && (
+                  <>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setSelectedImage(Math.max(0, selectedImage - 1))}
+                      disabled={selectedImage === 0}
+                      className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-white/80 hover:bg-white"
+                    >
+                      <ChevronLeft className="h-5 w-5" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setSelectedImage(Math.min(product.images.length - 1, selectedImage + 1))}
+                      disabled={selectedImage === product.images.length - 1}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-white/80 hover:bg-white"
+                    >
+                      <ChevronRight className="h-5 w-5" />
+                    </Button>
+                  </>
+                )}
               </div>
               {product.images.length > 1 && (
                 <div className="grid grid-cols-4 gap-2">

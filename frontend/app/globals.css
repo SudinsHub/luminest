@@ -12,18 +12,18 @@
   --popover-foreground: #000000;
   --primary: #000000;
   --primary-foreground: #ffffff;
-  --secondary: #ea9425;
+  --secondary: #ff9600;
   --secondary-foreground: #ffffff;
   --muted: #e0e0e0;
   --muted-foreground: #000000;
-  --accent: #ea9425;
+  --accent: #ff9600;
   --accent-foreground: #ffffff;
   --destructive: #ff4d4d;
   --destructive-foreground: #ffffff;
   --border: #e0e0e0;
   --input: #ffffff;
-  --ring: rgba(198, 142, 59, 0.5);
-  --chart-1: #c48e3b;
+  --ring: #ff9600;
+  --chart-1: #ff9600;
   --chart-2: #000000;
   --chart-3: #e0e0e0;
   --chart-4: #f5f5f5;
@@ -31,12 +31,12 @@
   --radius: 0.5rem;
   --sidebar: #ffffff;
   --sidebar-foreground: #000000;
-  --sidebar-primary: #ea9425;
+  --sidebar-primary: #ff9600;
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #e0e0e0;
   --sidebar-accent-foreground: #000000;
   --sidebar-border: #e0e0e0;
-  --sidebar-ring: rgba(198, 142, 59, 0.5);
+  --sidebar-ring: #ff9600;
 }
 
 @theme inline {

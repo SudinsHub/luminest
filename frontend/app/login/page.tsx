@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { useToast } from "@/hooks/use-toast"
 import { useAuth } from "@/contexts/auth-context"
+import Image from "next/image"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -47,8 +48,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
           <Link href="/" className="inline-flex items-center gap-2">
-            <div className="h-12 w-12 rounded-full bg-secondary" />
-            <span className="text-2xl font-bold">Luminest</span>
+              <Image src="/FF9600 Solution-06.png" alt="Luminest Logo" width={200} height={20} className="object-cover " />
           </Link>
         </div>
         <Card>

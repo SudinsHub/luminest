@@ -235,11 +235,11 @@ export default function CheckoutPage() {
                     <div className="space-y-2">
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Subtotal</span>
-                        <span>${cartTotal.toFixed(2)}</span>
+                        <span>৳{Number(cartTotal).toFixed(2)}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Delivery Charge</span>
-                        <span>${deliveryCharge.toFixed(2)}</span>
+                        <span>৳{Number(deliveryCharge).toFixed(2)}</span>
                       </div>
                       {discount > 0 && (
                         <div className="flex justify-between text-secondary">
@@ -250,7 +250,7 @@ export default function CheckoutPage() {
                       <div className="border-t pt-2">
                         <div className="flex justify-between text-lg font-bold">
                           <span>Total</span>
-                          <span>${total.toFixed(2)}</span>
+                          <span>৳{Number(total).toFixed(2)}</span>
                         </div>
                       </div>
                     </div>

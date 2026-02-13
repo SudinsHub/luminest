@@ -236,22 +236,22 @@ export default function AdminOrderDetailPage() {
             <CardContent className="space-y-2">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Subtotal</span>
-                <span>${order.subtotal.toFixed(2)}</span>
+                <span>৳{Number(order.subtotal).toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Delivery Charge</span>
-                <span>${order.delivery_charge.toFixed(2)}</span>
+                <span>৳{Number(order.delivery_charge).toFixed(2)}</span>
               </div>
               {order.discount_amount > 0 && (
                 <div className="flex justify-between text-secondary">
                   <span>Discount</span>
-                  <span>-${order.discount_amount.toFixed(2)}</span>
+                  <span>-${Number(order.discount_amount).toFixed(2)}</span>
                 </div>
               )}
               <div className="border-t pt-2">
                 <div className="flex justify-between text-lg font-bold">
                   <span>Total</span>
-                  <span>${order.total_amount.toFixed(2)}</span>
+                  <span>৳{Number(order.total_amount).toFixed(2)}</span>
                 </div>
               </div>
               <div className="mt-4 space-y-1 border-t pt-4">
