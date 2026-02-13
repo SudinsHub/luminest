@@ -121,7 +121,7 @@ export default function AdminDashboard() {
                       <p className="text-xs text-muted-foreground">{new Date(order.created_at).toLocaleDateString()}</p>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold">${order.total_amount.toFixed(2)}</p>
+                      <p className="font-bold">${Number(order.total_amount).toFixed(2)}</p>
                       <p className="text-sm text-muted-foreground">{order.order_status}</p>
                     </div>
                   </div>
