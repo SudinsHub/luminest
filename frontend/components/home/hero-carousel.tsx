@@ -95,7 +95,7 @@ export function HeroCarousel() {
           <img
             src="/luminest_hero_new.png"
             alt="Luminest"
-            className="w-full max-w-[520px]  mb-6"
+            className="w-full max-w-[520px]  mb-6 px-5 md:px-0"
           />
 
           {/* tagline */}
