@@ -169,7 +169,7 @@ export default function AdminOrderDetailPage() {
                           ${item.unit_price} × {item.quantity}
                         </p>
                       </div>
-                      <p className="font-semibold">${item.total_price}</p>
+                      <p className="font-semibold">৳{Number(item.total_price).toFixed(2)}</p>
                     </div>
                   </div>
                 ))}

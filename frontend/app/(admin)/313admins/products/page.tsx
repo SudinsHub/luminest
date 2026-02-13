@@ -124,7 +124,7 @@ export default function AdminProductsPage() {
                   />
                 </div>
                 <h3 className="mb-2 font-semibold text-balance">{product.title}</h3>
-                <p className="mb-2 text-lg font-bold">${product.price}</p>
+                <p className="mb-2 text-lg font-bold">৳{Number(product.price).toFixed(2)}</p>
                 <p className="mb-4 text-sm text-muted-foreground">Stock: {product.stock_quantity}</p>
                 <div className="flex gap-2">
                   <Link href={`/313admins/products/${product.id}`} className="flex-1">

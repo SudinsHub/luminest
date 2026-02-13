@@ -225,7 +225,7 @@ export default function ProductDetailPage() {
                 </span>
               </div>
 
-              <p className="mb-6 text-3xl font-bold">${product.price}</p>
+              <p className="mb-6 text-3xl font-bold">৳{product.price}</p>
 
               <p className="mb-6 leading-relaxed text-muted-foreground text-pretty">{product.description}</p>
 

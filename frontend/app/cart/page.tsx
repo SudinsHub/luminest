@@ -97,7 +97,7 @@ export default function CartPage() {
                               <Link href={`/products/${item.product_id}`}>
                                 <h3 className="font-semibold hover:text-secondary text-balance">{item.title}</h3>
                               </Link>
-                              <p className="mt-1 text-lg font-bold">${item.price}</p>
+                              <p className="mt-1 text-lg font-bold">৳{Number(item.price).toFixed(2)}</p>
                             </div>
 
                             <div className="flex items-center gap-4">
@@ -146,7 +146,7 @@ export default function CartPage() {
                     <div className="space-y-2">
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Subtotal</span>
-                        <span className="font-semibold">${cartTotal.toFixed(2)}</span>
+                        <span className="font-semibold">৳{Number(cartTotal).toFixed(2)}</span>
                       </div>
                       <div className="border-t pt-2">
                         <div className="flex justify-between text-lg font-bold">

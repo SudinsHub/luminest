@@ -114,7 +114,7 @@ export default function CategoryDetailPage() {
                         <span className="text-sm">{product.average_rating}</span>
                         <span className="text-sm text-muted-foreground">({product.total_reviews})</span>
                       </div>
-                      <p className="text-lg font-bold">${product.price}</p>
+                      <p className="text-lg font-bold">৳{Number(product.price).toFixed(2)}</p>
                       {product.stock_quantity === 0 && <p className="mt-2 text-sm text-destructive">Out of Stock</p>}
                     </CardContent>
                   </Card>

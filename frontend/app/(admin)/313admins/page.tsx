@@ -69,7 +69,7 @@ export default function AdminDashboard() {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">${stats?.totalSales.toFixed(2) || "0.00"}</div>
+            <div className="text-2xl font-bold">৳{Number(stats?.totalSales || 0).toFixed(2)}</div>
           </CardContent>
         </Card>
 
@@ -121,7 +121,7 @@ export default function AdminDashboard() {
                       <p className="text-xs text-muted-foreground">{new Date(order.created_at).toLocaleDateString()}</p>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold">${Number(order.total_amount).toFixed(2)}</p>
+                      <p className="font-bold">৳{Number(order.total_amount).toFixed(2)}</p>
                       <p className="text-sm text-muted-foreground">{order.order_status}</p>
                     </div>
                   </div>

@@ -102,7 +102,7 @@ export default function OrdersPage() {
                           <p className="text-sm text-muted-foreground">Payment: {order.payment_method}</p>
                         </div>
                         <div className="text-right">
-                          <p className="text-2xl font-bold">${order.total_amount.toFixed(2)}</p>
+                          <p className="text-2xl font-bold">৳{Number(order.total_amount).toFixed(2)}</p>
                         </div>
                       </div>
                     </CardContent>

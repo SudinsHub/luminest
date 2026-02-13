@@ -80,7 +80,7 @@ export function FeaturedSection({ title}: FeaturedSectionProps) {
                     <span className="text-sm">{Number(product.average_rating).toFixed(1)}</span>
                     <span className="text-sm text-muted-foreground">({product.total_reviews})</span>
                   </div>
-                  <p className="text-lg font-bold">${product.price}</p>
+                  <p className="text-lg font-bold">৳{Number(product.price).toFixed(2)}</p>
                 </CardContent>
               </Card>
             </Link>
