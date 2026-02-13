@@ -93,7 +93,7 @@ export function HeroCarousel() {
 
           {/* SVG logo */}
           <img
-            src="/luminest_hero_new.svg"
+            src="/luminest_hero_new.png"
             alt="Luminest"
             className="w-full max-w-[520px]  mb-6"
           />
