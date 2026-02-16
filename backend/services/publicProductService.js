@@ -33,6 +33,10 @@ class PublicProductService {
   static async getProductsByCategory(categoryId) {
     return PublicProductRepository.getProductsByCategoryId(categoryId);
   }
+
+  static async getProductsByCategoryLatestLimited(categoryName) {
+    return PublicProductRepository.getProductsByCategoryLatestLimited(categoryName);
+  }
 }
 
 module.exports = PublicProductService;

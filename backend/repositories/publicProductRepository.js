@@ -108,6 +108,22 @@ class PublicProductRepository {
     );
     return res.rows;
   }
+
+  static async getProductsByCategoryLatestLimited(categoryName) {
+    const res = await pool.query(
+      'SELECT p.*, ARRAY_AGG(DISTINCT t.tag_name) AS tags' + 
+      'FROM products p' +
+      'JOIN product_categories pc ON p.id = pc.product_id ' +
+      'LEFT JOIN product_tags pt ON p.id = pt.product_id ' +
+      'LEFT JOIN tags t ON pt.tag_name = t.tag_name ' +
+      'LEFT JOIN categories c ON pc.category_id = c.id' +
+      'WHERE c.name = $1 ' +
+      'GROUP BY p.id '+
+      'ORDER BY p.created_at DESC LIMIT 5',
+      [categoryName]
+    );
+    return res.rows;
+  }
 }
 
 module.exports = PublicProductRepository;

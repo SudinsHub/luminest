@@ -15,7 +15,12 @@ import { useAuth } from "@/contexts/auth-context"
 import { useCart } from "@/contexts/cart-context"
 import api from "@/lib/api/axios"
 import type { Product } from "@/lib/types"
-import { Star, ShoppingCart, Minus, Plus, ChevronLeft, ChevronRight } from "lucide-react"
+import { Star, ShoppingCart, Minus, Plus, ChevronLeft, ChevronRight, Link } from "lucide-react"
+
+interface Product_Category {
+  name: string;
+  products?: Product[];
+}
 
 export default function ProductDetailPage() {
   const params = useParams()
@@ -31,7 +36,11 @@ export default function ProductDetailPage() {
   const [rating, setRating] = useState(5)
   const [comment, setComment] = useState("")
   const [isSubmittingReview, setIsSubmittingReview] = useState(false)
+    
+  
+  const [relatedCategoryProducts, setRelatedCategoryProducts] = useState<Product_Category[]>([])
 
+  
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -48,9 +57,28 @@ export default function ProductDetailPage() {
         setIsLoading(false)
       }
     }
-
+    
     fetchProduct()
   }, [params.id, toast])
+  
+  useEffect(() => {
+    const fetchRelatedCategoryProducts = async (categoryName: string) => {
+      try {
+        if (categoryName) {
+          const response = await api.get(`/products/by-category-name-latest-limited/${categoryName}`)
+          
+          setRelatedCategoryProducts(prev => [...prev, {name: categoryName, products: response.data}])
+        }
+      } catch (error) {
+        console.error("Failed to fetch related category products:", error)
+      }
+    }
+
+    if(product) product.categories.forEach((category) => {
+      fetchRelatedCategoryProducts(category)
+    })
+
+  }, [product])
 
   const handleAddToCart = async () => {
     if (!user || userRole !== "customer") {
@@ -227,8 +255,6 @@ export default function ProductDetailPage() {
 
               <p className="mb-6 text-3xl font-bold">৳{product.price}</p>
 
-              <p className="mb-6 leading-relaxed text-muted-foreground text-pretty">{product.description}</p>
-
               {product.stock_quantity > 0 ? (
                 <>
                   <div className="mb-6 flex items-center gap-4">
@@ -266,6 +292,8 @@ export default function ProductDetailPage() {
                 </div>
               )}
 
+              <p className="mb-6 leading-relaxed text-muted-foreground text-pretty">{product.description}</p>
+
               {product.categories.length > 0 && (
                 <div className="mt-6">
                   <span className="font-semibold">Categories: </span>
@@ -274,6 +302,48 @@ export default function ProductDetailPage() {
               )}
             </div>
           </div>
+
+          {/* Related Products Section */}
+          {relatedCategoryProducts.length > 0 && (
+            <div className="mt-12">
+              <h2 className="mb-6 text-2xl font-bold">Related Products</h2>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                {relatedCategoryProducts.map((category) => 
+                  category.products && category.products.length > 0 && (
+                    <div key={category.name} className="border rounded-lg p-4">
+                      <h3 className="mb-4 font-semibold">{category.name}</h3>
+                      <div className="space-y-4">
+                        {category.products.map((product) => (
+                          <Link key={product.id} href={`/products/${product.id}`}>
+                            <Card className="group overflow-hidden transition-shadow hover:shadow-lg">
+                              <div className="relative h-64 overflow-hidden">
+                                <Image
+                                  src={product.images[0] || `/placeholder.svg?height=300&width=300&query=${product.title}`}
+                                  alt={product.title}
+                                  fill
+                                  className="object-cover transition-transform group-hover:scale-105"
+                                />
+                              </div>
+                              <CardContent className="p-4">
+                                <h3 className="mb-2 font-semibold text-balance">{product.title}</h3>
+                                <div className="mb-2 flex items-center gap-1">
+                                  <Star className="h-4 w-4 fill-secondary text-secondary" />
+                                  <span className="text-sm">{product.average_rating}</span>
+                                  <span className="text-sm text-muted-foreground">({product.total_reviews})</span>
+                                </div>
+                                <p className="text-lg font-bold">৳{Number(product.price).toFixed(2)}</p>
+                                {product.stock_quantity === 0 && <p className="mt-2 text-sm text-destructive">Out of Stock</p>}
+                              </CardContent>
+                            </Card>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Reviews Section */}
           <div className="mt-12">

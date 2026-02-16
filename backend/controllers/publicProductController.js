@@ -41,6 +41,16 @@ class PublicProductController {
     }
   }
 
+  static async getProductsByCategoryLatestLimited(req, res, next) {
+    try {
+      const { categoryName } = req.params;
+      const products = await PublicProductService.getProductsByCategoryLatestLimited(categoryName);
+      res.status(200).json(products);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   static async getProductReviews(req, res, next) {
     try {
       const { productId } = req.params;
