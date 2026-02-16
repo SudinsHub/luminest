@@ -292,14 +292,15 @@ export default function ProductDetailPage() {
                 </div>
               )}
 
-              <p className="mb-6 leading-relaxed text-muted-foreground text-pretty">{product.description}</p>
-
               {product.categories.length > 0 && (
                 <div className="mt-6">
                   <span className="font-semibold">Categories: </span>
                   <span className="text-muted-foreground">{product.categories.join(", ")}</span>
                 </div>
               )}
+
+              <p className="mb-6 leading-relaxed text-muted-foreground text-pretty">{product.description}</p>
+              
             </div>
           </div>
 

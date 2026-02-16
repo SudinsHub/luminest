@@ -116,7 +116,7 @@ class PublicProductRepository {
       'JOIN product_categories pc ON p.id = pc.product_id ' +
       'LEFT JOIN product_tags pt ON p.id = pt.product_id ' +
       'LEFT JOIN tags t ON pt.tag_name = t.tag_name ' +
-      'LEFT JOIN categories c ON pc.category_id = c.id' +
+      'LEFT JOIN categories c ON pc.category_id = c.id ' +
       'WHERE c.name = $1 ' +
       'GROUP BY p.id '+
       'ORDER BY p.created_at DESC LIMIT 5',
