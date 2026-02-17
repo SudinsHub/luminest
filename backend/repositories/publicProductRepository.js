@@ -110,6 +110,8 @@ class PublicProductRepository {
   }
 
   static async getProductsByCategoryLatestLimited(categoryName) {
+    console.log("searching latest products for: ", categoryName);
+    
     const res = await pool.query(
       'SELECT p.*, ARRAY_AGG(DISTINCT t.tag_name) AS tags ' + 
       'FROM products p ' +
