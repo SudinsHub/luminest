@@ -11,7 +11,7 @@ router.get('/:id', PublicProductController.getProductById);
 router.get('/tag/:tag', PublicProductController.getFeaturedProducts);
 // Get products by category
 router.get('/by-category/:categoryId', PublicProductController.getProductsByCategory);
-router.get('/by-category-name-latest-limited/:categoryId', PublicProductController.getProductsByCategoryLatestLimited);
+router.get('/by-category-name-latest-limited/:categoryName', PublicProductController.getProductsByCategoryLatestLimited);
 // Get product reviews (publicly accessible)
 router.get('/:productId/reviews', PublicProductController.getProductReviews);
 
