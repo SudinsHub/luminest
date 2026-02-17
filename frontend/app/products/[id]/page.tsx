@@ -319,7 +319,7 @@ export default function ProductDetailPage() {
                             <Card className="group overflow-hidden transition-shadow hover:shadow-lg">
                               <div className="relative h-64 overflow-hidden">
                                 <Image
-                                  src={product.images[0] || `/placeholder.svg?height=300&width=300&query=${product.title}`}
+                                  src={`${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}${product.images[0] || `/placeholder.svg?height=300&width=300&query=${product.title}`}`}
                                   alt={product.title}
                                   fill
                                   className="object-cover transition-transform group-hover:scale-105"
