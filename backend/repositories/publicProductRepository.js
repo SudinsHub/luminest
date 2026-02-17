@@ -111,8 +111,8 @@ class PublicProductRepository {
 
   static async getProductsByCategoryLatestLimited(categoryName) {
     const res = await pool.query(
-      'SELECT p.*, ARRAY_AGG(DISTINCT t.tag_name) AS tags' + 
-      'FROM products p' +
+      'SELECT p.*, ARRAY_AGG(DISTINCT t.tag_name) AS tags ' + 
+      'FROM products p ' +
       'JOIN product_categories pc ON p.id = pc.product_id ' +
       'LEFT JOIN product_tags pt ON p.id = pt.product_id ' +
       'LEFT JOIN tags t ON pt.tag_name = t.tag_name ' +
