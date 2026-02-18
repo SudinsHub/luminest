@@ -306,64 +306,64 @@ export default function ProductDetailPage() {
           </div>
 
           {/* Related Products Section */}
-          {relatedCategoryProducts.length > 0 && (
-            <section className="py-12">
-              <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div className="mb-8 flex items-center justify-between">
-                  <h2 className="text-3xl font-bold">Related Products</h2>
-                </div>
+          <div className="mt-12">
+            {relatedCategoryProducts.length > 0 && (
+              <section>
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                  <h2 className="mb-6 text-2xl font-bold">Related Products</h2>
 
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                  {relatedCategoryProducts
-                    .flatMap((category) => category.products || [])
-                    .map((product) => (
-                      <Link key={product.id} href={`/products/${product.id}`}>
-                        <Card className="group overflow-hidden transition-shadow hover:shadow-lg">
-                          <div className="relative h-64 overflow-hidden">
-                            <Image
-                              src={
-                                product.images?.[0]
-                                  ? `${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}${product.images[0]}`
-                                  : `/placeholder.svg?height=300&width=300&query=${product.title}`
-                              }
-                              alt={product.title}
-                              fill
-                              className="object-cover transition-transform group-hover:scale-105"
-                            />
-                          </div>
-
-                          <CardContent className="p-4">
-                            <h3 className="mb-2 font-semibold text-balance">
-                              {product.title}
-                            </h3>
-
-                            <div className="mb-2 flex items-center gap-1">
-                              <Star className="h-4 w-4 fill-secondary text-secondary" />
-                              <span className="text-sm">
-                                {Number(product.average_rating).toFixed(1)}
-                              </span>
-                              <span className="text-sm text-muted-foreground">
-                                ({product.total_reviews})
-                              </span>
+                  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                    {relatedCategoryProducts
+                      .flatMap((category) => category.products || [])
+                      .map((product) => (
+                        <Link key={product.id} href={`/products/${product.id}`}>
+                          <Card className="group overflow-hidden transition-shadow hover:shadow-lg">
+                            <div className="relative h-64 overflow-hidden">
+                              <Image
+                                src={
+                                  product.images?.[0]
+                                    ? `${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}${product.images[0]}`
+                                    : `/placeholder.svg?height=300&width=300&query=${product.title}`
+                                }
+                                alt={product.title}
+                                fill
+                                className="object-cover transition-transform group-hover:scale-105"
+                              />
                             </div>
 
-                            <p className="text-lg font-bold">
-                              ৳{Number(product.price).toFixed(2)}
-                            </p>
+                            <CardContent className="p-4">
+                              <h3 className="mb-2 font-semibold text-balance">
+                                {product.title}
+                              </h3>
 
-                            {product.stock_quantity === 0 && (
-                              <p className="mt-2 text-sm text-destructive">
-                                Out of Stock
+                              <div className="mb-2 flex items-center gap-1">
+                                <Star className="h-4 w-4 fill-secondary text-secondary" />
+                                <span className="text-sm">
+                                  {Number(product.average_rating).toFixed(1)}
+                                </span>
+                                <span className="text-sm text-muted-foreground">
+                                  ({product.total_reviews})
+                                </span>
+                              </div>
+
+                              <p className="text-lg font-bold">
+                                ৳{Number(product.price).toFixed(2)}
                               </p>
-                            )}
-                          </CardContent>
-                        </Card>
-                      </Link>
-                    ))}
+
+                              {product.stock_quantity === 0 && (
+                                <p className="mt-2 text-sm text-destructive">
+                                  Out of Stock
+                                </p>
+                              )}
+                            </CardContent>
+                          </Card>
+                        </Link>
+                      ))}
+                  </div>
                 </div>
-              </div>
-            </section>
-          )}
+              </section>
+            )}
+          </div>
 
           {/* Reviews Section */}
           <div className="mt-12">
