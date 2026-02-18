@@ -15,7 +15,8 @@ import { useAuth } from "@/contexts/auth-context"
 import { useCart } from "@/contexts/cart-context"
 import api from "@/lib/api/axios"
 import type { Product } from "@/lib/types"
-import { Star, ShoppingCart, Minus, Plus, ChevronLeft, ChevronRight, Link } from "lucide-react"
+import { Star, ShoppingCart, Minus, Plus, ChevronLeft, ChevronRight } from "lucide-react"
+import Link from "next/link"
 
 interface Product_Category {
   name: string;
