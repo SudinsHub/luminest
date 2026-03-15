@@ -25,9 +25,10 @@ router.get('/products-with-category', authenticateToken, authorizeRoles(['admin'
 router.get('/products', authenticateToken, authorizeRoles(['admin']), AdminProductController.getAllProducts);
 router.get('/products/:id', authenticateToken, authorizeRoles(['admin']), AdminProductController.getProductById);
 router.post('/products/create', authenticateToken, authorizeRoles(['admin']), uploadProductImages.fields([{ name: 'images'}]), AdminProductController.createProduct);
-router.put('/products/:id', authenticateToken, authorizeRoles(['admin']), AdminProductController.updateProduct);
+router.put('/products/:id', authenticateToken, authorizeRoles(['admin']), uploadProductImages.array('newImages'), AdminProductController.updateProduct);
 router.delete('/products/:id', authenticateToken, authorizeRoles(['admin']), AdminProductController.deleteProduct);
 router.post('/products/:id/images/upload', authenticateToken, authorizeRoles(['admin']), uploadProductImages.single('image'), AdminProductController.uploadProductImage);
+router.delete('/products/:id/images', authenticateToken, authorizeRoles(['admin']), AdminProductController.deleteProductImage);
 router.delete('/products/:id/images/:imageId', authenticateToken, authorizeRoles(['admin']), AdminProductController.deleteProductImage);
 
 // Category Management

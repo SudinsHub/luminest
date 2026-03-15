@@ -104,7 +104,18 @@ class AdminProductRepository {
     }
   }
 
-  static async deleteProduct(id) {
+  static async updateProductImages(id, finalImages) {
+    const res = await pool.query(
+      'UPDATE products SET images = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING images',
+      [finalImages, id]
+    );
+    if (!res.rows[0]) {
+      throw new Error('Product not found');
+    }
+    return res.rows[0].images;
+  }
+
+  static async getProductById(id) {
     await pool.query('DELETE FROM products WHERE id = $1', [id]);
   }
 
@@ -130,6 +141,17 @@ class AdminProductRepository {
       [productId, imageUrl]
     );
     return res.rows[0];
+  }
+
+  static async removeImageFromProduct(productId, imageUrl) {
+    const res = await pool.query(
+      'UPDATE products SET images = array_remove(images, $1), updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING images',
+      [imageUrl, productId]
+    );
+    if (!res.rows[0]) {
+      throw new Error('Product not found');
+    }
+    return res.rows[0].images;
   }
 }
 

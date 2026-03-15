@@ -58,9 +58,85 @@ class AdminProductController {
   static async updateProduct(req, res, next) {
     try {
       const { id } = req.params;
-      const updatedProduct = await AdminProductService.updateProduct(id, req.body);
+      const { title, description, price, stock_quantity, categoryIds, tags, imageOrder } = req.body;
+      const uploadedFiles = req.files?.newImages || [];
+
+      // Parse categoryIds and tags if they are JSON strings
+      let parsedCategoryIds = categoryIds;
+      let parsedTags = tags;
+      try {
+        if (typeof categoryIds === 'string') {
+          parsedCategoryIds = JSON.parse(categoryIds);
+        }
+        if (typeof tags === 'string') {
+          parsedTags = JSON.parse(tags);
+        }
+      } catch (err) {
+        console.error('Error parsing JSON:', err);
+      }
+
+      // Parse imageOrder
+      let parsedImageOrder = [];
+      try {
+        parsedImageOrder = JSON.parse(imageOrder);
+      } catch (err) {
+        console.error('Error parsing imageOrder:', err);
+        return res.status(400).json({ message: 'Invalid imageOrder format' });
+      }
+
+      // Build final images array from imageOrder
+      const finalImages = [];
+      let newFileIndex = 0;
+
+      for (const item of parsedImageOrder) {
+        if (item.startsWith('existing:')) {
+          const url = item.replace('existing:', '');
+          finalImages.push(url);
+        } else if (item.startsWith('new:')) {
+          if (newFileIndex < uploadedFiles.length) {
+            const file = uploadedFiles[newFileIndex];
+            finalImages.push(`/uploads/products/${file.filename}`);
+            newFileIndex++;
+          }
+        }
+      }
+
+      // Get the current product to find removed images
+      const currentProduct = await AdminProductService.getProductById(id);
+      const oldImages = currentProduct.images || [];
+      const removedImages = oldImages.filter(img => !finalImages.includes(img));
+
+      // Delete removed image files from filesystem
+      for (const imageUrl of removedImages) {
+        const filename = imageUrl.replace('/uploads/products/', '');
+        const filePath = path.join(__dirname, `../uploads/products/${filename}`);
+        fs.unlink(filePath, err => {
+          if (err) console.error('Failed to delete file:', err.message);
+        });
+      }
+
+      // Update product with new data
+      const updatedProduct = await AdminProductService.updateProduct(id, {
+        title,
+        description,
+        price: Number.parseFloat(price),
+        stock_quantity: Number.parseInt(stock_quantity),
+        images: finalImages,
+        categoryIds: parsedCategoryIds,
+        tags: parsedTags,
+      });
+
       res.status(200).json({ message: 'Product updated successfully', product: updatedProduct });
     } catch (error) {
+      // Clean up uploaded files on error
+      if (req.files && req.files.newImages && req.files.newImages.length > 0) {
+        for (const file of req.files.newImages) {
+          const filePath = path.join(__dirname, `../uploads/products/${file.filename}`);
+          fs.unlink(filePath, err => {
+            if (err) console.error('Failed to delete file after error:', err.message);
+          });
+        }
+      }
       next(error);
     }
   }
@@ -81,7 +157,7 @@ class AdminProductController {
       if (!req.file) {
         return res.status(400).json({ message: 'No file uploaded' });
       }
-      const imageUrl = `/uploads/${req.file.filename}`;
+      const imageUrl = `/uploads/products/${req.file.filename}`;
       const images = await AdminProductService.addProductImage(id, imageUrl);
       res.status(200).json({ message: 'Image uploaded successfully', images });
     } catch (error) {
@@ -91,13 +167,26 @@ class AdminProductController {
 
   static async deleteProductImage(req, res, next) {
     try {
-      const { id, imageId } = req.params; // imageId here refers to the image URL for simplicity
-      await AdminProductService.deleteProductImage(id, `/uploads/${imageId}`);
+      const { id } = req.params;
+      const { imageUrl } = req.body;
+
+      if (!imageUrl) {
+        return res.status(400).json({ message: 'imageUrl is required' });
+      }
+
+      // Delete file from filesystem
+      const filename = imageUrl.replace('/uploads/products/', '');
+      const filePath = path.join(__dirname, `../uploads/products/${filename}`);
+
+      fs.unlink(filePath, err => {
+        if (err) console.error('Failed to delete file:', err.message);
+      });
+
+      // Remove image from database
+      await AdminProductService.removeImageFromProduct(id, imageUrl);
       res.status(200).json({ message: 'Image deleted successfully' });
     } catch (error) {
       next(error);
     }
   }
 }
-
-module.exports = AdminProductController;

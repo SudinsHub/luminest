@@ -49,6 +49,18 @@ class AdminProductService {
     }
     return AdminProductRepository.deleteProductImage(productId, imageUrl);
   }
+
+  static async updateProductImages(productId, finalImages) {
+    return AdminProductRepository.updateProductImages(productId, finalImages);
+  }
+
+  static async removeImageFromProduct(productId, imageUrl) {
+    const product = await AdminProductRepository.getProductImageById(productId, imageUrl);
+    if (!product) {
+      throw new Error('Product or image not found');
+    }
+    return AdminProductRepository.removeImageFromProduct(productId, imageUrl);
+  }
 }
 
 module.exports = AdminProductService;
