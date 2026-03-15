@@ -190,3 +190,5 @@ class AdminProductController {
     }
   }
 }
+
+module.exports = AdminProductController;
