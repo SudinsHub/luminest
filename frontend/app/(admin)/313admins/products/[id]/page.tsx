@@ -307,9 +307,6 @@ export default function EditProductPage() {
 
       // Send request with progress tracking
       await api.put(`/admin/products/${params.id}`, formDataObj, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
         onUploadProgress: (progressEvent) => {
           const progress = progressEvent.total
             ? Math.round((progressEvent.loaded / progressEvent.total) * 100)

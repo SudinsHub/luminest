@@ -61,6 +61,12 @@ class AdminProductController {
       const { title, description, price, stock_quantity, categoryIds, tags, imageOrder } = req.body;
       const uploadedFiles = req.files?.newImages || [];
 
+      // Get the current product FIRST to have backup data
+      const currentProduct = await AdminProductService.getProductById(id);
+      if (!currentProduct) {
+        return res.status(404).json({ message: 'Product not found' });
+      }
+
       // Parse categoryIds and tags if they are JSON strings
       let parsedCategoryIds = categoryIds;
       let parsedTags = tags;
@@ -75,44 +81,49 @@ class AdminProductController {
         console.error('Error parsing JSON:', err);
       }
 
-      // Parse imageOrder
-      let parsedImageOrder = [];
-      try {
-        parsedImageOrder = JSON.parse(imageOrder);
-      } catch (err) {
-        console.error('Error parsing imageOrder:', err);
-        return res.status(400).json({ message: 'Invalid imageOrder format' });
-      }
+      // Handle images - if imageOrder is provided, process it; otherwise keep existing
+      let finalImages = currentProduct.images || [];
+      
+      if (imageOrder) {
+        let parsedImageOrder = [];
+        try {
+          parsedImageOrder = JSON.parse(imageOrder);
+        } catch (err) {
+          console.error('Error parsing imageOrder:', err);
+          // If imageOrder parsing fails, keep existing images
+          console.warn('Using existing images due to imageOrder parse failure');
+        }
 
-      // Build final images array from imageOrder
-      const finalImages = [];
-      let newFileIndex = 0;
+        // Only process if we successfully parsed imageOrder
+        if (parsedImageOrder && parsedImageOrder.length > 0) {
+          finalImages = [];
+          let newFileIndex = 0;
 
-      for (const item of parsedImageOrder) {
-        if (item.startsWith('existing:')) {
-          const url = item.replace('existing:', '');
-          finalImages.push(url);
-        } else if (item.startsWith('new:')) {
-          if (newFileIndex < uploadedFiles.length) {
-            const file = uploadedFiles[newFileIndex];
-            finalImages.push(`/uploads/products/${file.filename}`);
-            newFileIndex++;
+          for (const item of parsedImageOrder) {
+            if (item.startsWith('existing:')) {
+              const url = item.replace('existing:', '');
+              finalImages.push(url);
+            } else if (item.startsWith('new:')) {
+              if (newFileIndex < uploadedFiles.length) {
+                const file = uploadedFiles[newFileIndex];
+                finalImages.push(`/uploads/products/${file.filename}`);
+                newFileIndex++;
+              }
+            }
+          }
+
+          // Get removed images and delete from filesystem
+          const oldImages = currentProduct.images || [];
+          const removedImages = oldImages.filter(img => !finalImages.includes(img));
+
+          for (const imageUrl of removedImages) {
+            const filename = imageUrl.replace('/uploads/products/', '');
+            const filePath = path.join(__dirname, `../uploads/products/${filename}`);
+            fs.unlink(filePath, err => {
+              if (err) console.error('Failed to delete file:', err.message);
+            });
           }
         }
-      }
-
-      // Get the current product to find removed images
-      const currentProduct = await AdminProductService.getProductById(id);
-      const oldImages = currentProduct.images || [];
-      const removedImages = oldImages.filter(img => !finalImages.includes(img));
-
-      // Delete removed image files from filesystem
-      for (const imageUrl of removedImages) {
-        const filename = imageUrl.replace('/uploads/products/', '');
-        const filePath = path.join(__dirname, `../uploads/products/${filename}`);
-        fs.unlink(filePath, err => {
-          if (err) console.error('Failed to delete file:', err.message);
-        });
       }
 
       // Update product with new data
