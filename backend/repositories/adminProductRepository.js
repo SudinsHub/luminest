@@ -115,7 +115,7 @@ class AdminProductRepository {
     return res.rows[0].images;
   }
 
-  static async getProductById(id) {
+  static async deleteProduct(id) {
     await pool.query('DELETE FROM products WHERE id = $1', [id]);
   }
 
