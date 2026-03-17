@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/components/ui/carousel"
 import { useToast } from "@/hooks/use-toast"
 import { useAuth } from "@/contexts/auth-context"
 import { useCart } from "@/contexts/cart-context"
@@ -33,6 +34,7 @@ export default function ProductDetailPage() {
   const [product, setProduct] = useState<Product | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [selectedImage, setSelectedImage] = useState(0)
+  const [carouselApi, setCarouselApi] = useState<CarouselApi>()
   const [quantity, setQuantity] = useState(1)
   const [rating, setRating] = useState(5)
   const [comment, setComment] = useState("")
@@ -62,6 +64,22 @@ export default function ProductDetailPage() {
     fetchProduct()
   }, [params.id, toast])
   
+  useEffect(() => {
+    if (!carouselApi) return
+
+    carouselApi.on("select", () => {
+      setSelectedImage(carouselApi.selectedScrollSnap())
+    })
+  }, [carouselApi])
+
+  useEffect(() => {
+    if (!carouselApi) return
+
+    if (carouselApi.selectedScrollSnap() !== selectedImage) {
+      carouselApi.scrollTo(selectedImage)
+    }
+  }, [carouselApi, selectedImage])
+
   useEffect(() => {
     const fetchRelatedCategoryProducts = async (categoryName: string) => {
       try {
@@ -179,37 +197,59 @@ export default function ProductDetailPage() {
           {/* Product Details */}
           <div className="grid gap-8 lg:grid-cols-2">
             {/* Images */}
+
             <div>
               <div className="relative mb-4 overflow-hidden rounded-lg">
-                <Image
-                  src={product.images[selectedImage] || `/placeholder.svg?height=600&width=600&query=${product.title}`}
-                  alt={product.title}
-                  width={600}
-                  height={600}
-                  className="h-auto w-full object-cover"
-                />
-                {product.images.length > 1 && (
-                  <>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => setSelectedImage(Math.max(0, selectedImage - 1))}
-                      disabled={selectedImage === 0}
-                      className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-white/80 hover:bg-white"
-                    >
-                      <ChevronLeft className="h-5 w-5" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => setSelectedImage(Math.min(product.images.length - 1, selectedImage + 1))}
-                      disabled={selectedImage === product.images.length - 1}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-white/80 hover:bg-white"
-                    >
-                      <ChevronRight className="h-5 w-5" />
-                    </Button>
-                  </>
-                )}
+                <Carousel
+                  setApi={setCarouselApi}
+                  opts={{ loop: true }}
+                >
+                  <CarouselContent>
+                    {product.images && product.images.length > 0 ? (
+                      product.images.map((image, index) => (
+                        <CarouselItem key={index}>
+                          <Image
+                            src={image || `/placeholder.svg?height=600&width=600&query=${product.title}`}
+                            alt={`${product.title} ${index + 1}`}
+                            width={600}
+                            height={600}
+                            className="h-auto w-full object-cover"
+                          />
+                        </CarouselItem>
+                      ))
+                    ) : (
+                      <CarouselItem>
+                        <Image
+                          src={`/placeholder.svg?height=600&width=600&query=${product.title}`}
+                          alt={product.title}
+                          width={600}
+                          height={600}
+                          className="h-auto w-full object-cover"
+                        />
+                      </CarouselItem>
+                    )}
+                  </CarouselContent>
+                  {product.images && product.images.length > 1 && (
+                    <>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => carouselApi?.scrollPrev()}
+                        className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-white/80 hover:bg-white z-10"
+                      >
+                        <ChevronLeft className="h-5 w-5" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => carouselApi?.scrollNext()}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-white/80 hover:bg-white z-10"
+                      >
+                        <ChevronRight className="h-5 w-5" />
+                      </Button>
+                    </>
+                  )}
+                </Carousel>
               </div>
               {product.images.length > 1 && (
                 <div className="grid grid-cols-4 gap-2">
@@ -233,7 +273,6 @@ export default function ProductDetailPage() {
                 </div>
               )}
             </div>
-
             {/* Product Info */}
             <div>
               <h1 className="mb-4 text-4xl font-bold text-balance">{product.title}</h1>
