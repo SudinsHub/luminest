@@ -54,6 +54,8 @@ class AuthController {
   static async registerAdmin(req, res, next) {
     try {
       const { name, email, password } = req.body;
+      console.log("Admin Credentials: ", name, email, password );
+      
       const { admin, accessToken, refreshToken } = await AuthService.registerAdmin({ name, email, password });
       res.status(201).json({ message: 'Admin registered successfully', admin, accessToken, refreshToken });
     } catch (error) {
