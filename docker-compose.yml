@@ -4,6 +4,8 @@ services:
     restart: always
     ports:
       - "127.0.0.1:3000:3000"
+    networks:
+      - shared-network
 
   backend:
     build: ./backend
@@ -16,25 +18,29 @@ services:
       - "127.0.0.1:5000:5000"
     volumes:
       - uploads_data:/app/uploads
+    networks:
+      - shared-network
 
   db:
     image: postgres:16
     restart: always
     env_file:
       - ./backend/.env
+    container_name: luminest-db-1
     environment:
-      # POSTGRES_DB: luminestdb
-      # POSTGRES_USER: luminest_boss
-      # POSTGRES_PASSWORD: 2/10/00/Naimul
-      # perse from env_file
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - db_data:/var/lib/postgresql/data
-    # ports:
-    #   - "5433:5432"
+    networks:
+      - shared-network
 
 volumes:
   db_data:
   uploads_data:
+
+networks:
+  shared-network:
+    external: true
+    name: shared-apps
